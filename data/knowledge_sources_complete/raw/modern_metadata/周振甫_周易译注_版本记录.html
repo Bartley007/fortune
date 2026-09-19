@@ -1,0 +1,844 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+  <title>周易譯注</title> 
+  <link href="/docShuju/r/cms/www/shuju/platform/style/webstyle.css?id=202107052" rel="stylesheet" type="text/css"> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/js/jquery-1.10.2.min.js"></script> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/js/web.js"></script> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/js/webViewArticle.js"></script> 
+  <!--jstree--> 
+  <link href="/docShuju/r/cms/www/shuju/platform/plug-ins/jstree/dist/themes/default/style.min.css" rel="stylesheet"> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/plug-ins/jstree/dist/jstree.min.js"></script> 
+  <!--tab左右滚动--> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/js/jquery.tabso_yeso.js"></script> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/js/note.js"></script> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/js/current.js?id=2"></script> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/script/StringUtil.js"></script> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/js/collection.js"></script> 
+  <!--分页--> 
+  <link href="/docShuju/r/cms/www/shuju/platform/plug-ins/page/css/simplePagination.css" rel="stylesheet"> 
+  <script src="/docShuju/r/cms/www/shuju/platform/plug-ins/page/js/jquery.simplePagination.js"></script> 
+  <!--弹出层--> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/plug-ins/layer/layer.js"></script> 
+  <script type="text/javascript" src="/docShuju/r/cms/www/shuju/platform/script/maxConnect.js"></script> 
+  <!-- 登录弹窗 --> 
+  <link href="/docShuju/r/cms/www/shuju/css/weui.css" rel="stylesheet" type="text/css"> 
+  <!--banner滚动--> 
+  <link href="/docShuju/r/cms/www/shuju/platform/plug-ins/swiper/css/idangerous.swiper.css" rel="stylesheet"> 
+  <script src="/docShuju/r/cms/www/shuju/platform/plug-ins/swiper/js/idangerous.swiper.min.js"></script> 
+  <!--<style>--> 
+  <!--.bigFont {--> 
+  <!--font-family:"中华书局宋体00平面","中华书局宋体02平面","中华书局宋体15平面";--> 
+  <!--}--> 
+  <!--</style>--> 
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c30d09073538a4d4521ff6a742e73165";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script> 
+  <style>
+
+		.main_04_1 .img_right .title a.on {
+			background:#fafafa;
+			border: 1px solid #cfcfcf;
+			color: #333;
+		}
+		.main_04_1 .img_right .title a.on:hover{background:#990000;border:1px solid #cfcfcf;color:#fff;}
+	</style> 
+  <script>
+$(function () {
+	$("body").on("click",'.main_04_1 .img_right .title a.scbtn',function(){
+		if($(this).hasClass("on")){
+		  	$(this).removeClass("on");
+		  	//取消收藏
+		  	href = "./platformDelCollection.jspx?contentId="+2026972;
+    	    $.ajax({
+    		type:"POST", 
+    		url:href,
+    		success:function(data){ 
+    			layer.msg('取消收藏！');
+    			$("#collectionSpan").html("收藏");
+    			 window.location.reload(); 
+    		},
+    		fail:function(data){ 
+    			layer.msg('取消收藏失败！');
+    		}
+    	    })	;
+			
+	  	}else{
+	  		  var $this = $(this),
+	  		    href="platformShowCat.jspx"
+				title = $this.attr("data-title")
+				contentid=$this.attr("data-content")
+				W = $this.attr("data-W")
+				H = $this.attr("data-H")
+				 var catid=$("#recordCatId").val()
+				$.ajax({
+					type:"GET", 
+					url:href,
+					title:title,
+					global:false,
+					cache:false,
+					success:function(data){ 
+						var index = layer.open({
+						  type:1,
+						  title: title,
+						  W: W,
+						  H: H,
+						  content: data,
+						  area: [W, H],
+						  closeBtn: 1,
+						  btn: ['确定', '取消'],				  
+						  yes: function(index, layero){
+							//点击确定后回调
+						    var catid=$("#recordCatId").val()
+							    if(catid==0){
+							  	layer.msg('请先创建书架分类!');
+							    }
+						    $.ajax({
+								        type: "post",
+								        url:"./platformAddMeBook.jspx?catid="+catid+"&contentid="+contentid,
+								        success: function(data){
+								        	$this.addClass("on");
+											layer.msg('收藏成功！');
+											$("#collectionSpan").html("已收藏");
+				                             layer.close(index);
+				                         }
+				             });
+	  		
+	                   	}
+		
+						});
+					}
+				});
+	  	}
+	});
+})
+
+function recordCatId(catid){
+	$("#recordCatId").val(catid)
+	}
+</script> 
+ </head> 
+ <body> 
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c30d09073538a4d4521ff6a742e73165";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script> 
+  <!-- header --> 
+  <div class="header w-100"> 
+   <div class="topbar"> 
+    <ul class="clearfix"> 
+     <div class="fl"> 
+      <a href="./platform.jspx" class="home">中华经典古籍库</a> 
+      <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span> 
+      <a href="http://www.ancientbooks.cn/" target="_blank">籍合網</a> 
+      <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span> 
+      <a href="http://abcircle.ancientbooks.cn/abcircle/group/detail/115" target="_blank">用户反馈</a> 
+      <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span> 
+      <a href="platformHelp.jspx" target="_blank">帮助</a> 
+     </div> 
+     <div class="fr"> 
+     </div> 
+    </ul> 
+   </div> 
+   <input type="hidden" name="stopUser" value=""> 
+   <input type="hidden" name="stopUserMsg" value=""> 
+   <input type="hidden" name="stopOrg" value=""> 
+   <input type="hidden" name="stopOrgMsg" value=""> 
+   <!--<img style="bottom: 120px;width: 110px;height: 100px;border: 0px solid transparent;background:transparent" class="wholefeedback" alt="扫码进群" src="http://image.ancientbooks.cn/goodsImg/wechatQrcode20190611.jpg">
+<span style="bottom: 70px;width: 110px;border: 0px solid transparent;background:transparent;color:#000000" class="wholefeedback"> 扫描二维码<br> 联系在线客服 </span>
+<style type="text/css">
+
+	.wholefeedback{position:fixed;right:10px;bottom:50px;font-size:14px;line-height:18px;text-align:center;padding:6px 10px 0;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;color:#fff;background:#ac843e;border:1px solid #ac843e;display:inline-block;vertical-align:middle;zoom:1;width:52px;height:50px;margin-bottom:6px;border-radius:4px;-webkit-border-radius:4px;-moz-border-radius:4px;font-weight:bold;z-index:100}
+	.wholefeedback:HOVER{background:#cea969;border:1px solid #cea969}
+	@media screen and (max-width:1366px) {
+		.wholefeedback{right:0; padding:0;}
+		img.wholefeedback{height: inherit !important; width:84px !important; padding:0 10px;}
+		span.wholefeedback{width:86px !important;}
+	}
+</style>--> 
+   <style>
+/*公告弹窗*/
+.bg1{position: fixed; left:0; right:0; top:0; bottom:0; background:rgba(0,0,0,.8); display: none; z-index: 9;}
+.dialog1{position: fixed; left:50%; top:50%; margin-top:-255px; width:680px; margin-left:-340px; padding-bottom:20px;
+	background:white; border-radius:5px; -webkit-border-radius:5px; -moz-border-radius:5px; -ms-border-radius:5px;
+	z-index: 10; display: none;}
+.dialog1 .con{padding:20px 30px;}
+.dialog1 .con p{line-height:30px; font-size:16px;}
+.dialog1 .con p a{text-decoration: underline;}
+.dialog1 .btns{text-align: center;}
+.dialog1 .btns a{display: inline-block; width:100px; height:30px; line-height:30px; border-radius:5px; -webkit-border-radius:5px;
+	-moz-border-radius:5px; -ms-border-radius:5px; margin:0 10px; color:white; padding:0 10px;}
+.dialog1 .btns .a1{background:#86683c;}
+.dialog1 .btns .a2{background:#990000;}
+.dialog1 .close{width:18px; height:18px; background:url(/docShuju/r/cms/www/shuju/platform/img/close.png) no-repeat center center;
+	position: absolute; right:10px; top:10px; cursor: pointer;}
+.dialog1 .btns a{width:120px; height:30px; line-height:30px;border-radius:5px; -webkit-border-radius:5px;
+	-moz-border-radius:5px; -ms-border-radius:5px; margin:0 10px; color:white; padding:0 10px; display: inline-block;background:#990000;
+	margin:0 auto; margin-bottom:10px;}
+.dialog1 .btns p input{margin-right:5px;}
+.dialog1 .btns p input,.dialog1 .btns p label{display: inline-block; vertical-align: middle; font-size:14px;}
+/*公告弹框结束 */
+</style> 
+   <div class="dialog1"> 
+    <div class="con"> 
+     <p>尊敬的用户：</p> 
+     <p style="text-indent: 2em;" id="warnText">数字出版精品，献礼建党百年，点击下方按钮免费领取300种精品古籍阅读权限</p> 
+    </div> 
+    <div class="btns"> 
+     <a class="sureBtn" id="gotoGet" href="ssoLogin.jspx?returnUrl=%2FdocShuju%2FplatformBookDetails.jspx%3Fid%3D2026972">立即领取</a> 
+     <a href="javascript:;" class="sureBtn" style="margin-left: 20px;background:#999" id="hasGet" onclick="closeShowAuth()">已领取，不再显示</a> 
+     <a href="javascript:;" class="sureBtn" style="display: none" id="sureOk">确定</a> 
+    </div> 
+    <span class="close"></span> 
+   </div> 
+   <div class="bg1"></div> 
+   <script>
+  function showDialog1() {
+      $(".dialog1,.bg1").show();
+  }
+
+
+  $(function() {
+      $("#sureOk").click(function () {
+          $(".dialog1,.bg1").hide();
+          $("#buy").hide();
+      });
+      $(".dialog1 .close").click(function(){
+          $(".dialog1,.bg1").hide();
+      });
+  })
+
+	function gotoGetAuth() {
+        //请求后台获取权限
+        $.ajax({
+            type: "post",
+            url: "platformGetBJXLAuth.jspx",
+			data:{
+                endDateStr:'2021-07-31'
+			},
+            success: function (res) {
+                $("#warnText").text("您已成功领取免费权限，权限有效期至2021-07-31");
+                $("#gotoGet").hide();
+                $("#hasGet").hide();
+                $("#sureOk").show();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    }
+
+    function closeShowAuth() {
+        window.localStorage.setItem('bjxl_storge','true');
+        $(".dialog1,.bg1").hide();
+    }
+</script>  
+   <div class="onlineSer">
+     在线客服 
+    <p> <img src="/docShuju/r/cms/www/shuju/platform/img/ewm.jpg"> <span>扫描二维码<br>联系在线客服</span> </p> 
+   </div> 
+   <style type="text/css">
+	.onlineSer{position: fixed; right:5px; top:70%; font-size:12px; text-align: center; z-index:10;
+		padding-top:35px; background:url(/docShuju/r/cms/www/shuju/platform/img/line.png) no-repeat center top; background-size:30px; cursor: pointer;}
+	.onlineSer p{position: absolute; top:-40px; right:55px; display: none; padding:10px; background:white;
+		box-shadow: 0 0 5px 0 rgba(0,0,0,.5);}
+	.onlineSer img{display: block;  width:120px; margin-bottom:5px;}
+	.onlineSer:hover p{display: block;}
+</style> 
+   <script>
+$(document).ready(function(){
+	$("body").on("click", "#try", function(){
+		href = "http:///goprobation?uniqueIdentific=cpb-jdgj";
+		title = "申请试用";
+		W = "600px";
+		H = "550px";
+		layer.open({
+		  type:2,
+		  title: title,
+		  W: W,
+		  H: H,
+		  content: href,
+		  area: [W, H],
+		  closeBtn: 1
+		});
+	});
+});
+$(function(){
+    $(".branchList").hide();
+
+    $("body").on("click",".branchList li",function(){
+       var key = $(this).attr("attr-key");
+        var index = layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+       $.ajax({
+		   url:"changeBranch.jspx",
+		   type:"post",
+		   data:{"key":key},
+		   success:function(data){
+		       $(".branchList").hide();
+		       if(data=="fail"){
+					alert("操作失败，请稍后重试！")
+			   }else{
+                   location.reload();
+               }
+		   }
+	   });
+	});
+    $("body").on("click",".orgBranch",function () {
+        var isshow = $(".branchList").css("display");
+        if(isshow=="block"){
+            $(".branchList").hide();
+		}else{
+
+            $(".branchList").show();
+        }
+    });
+});
+var stopUser = "";
+var stopUserMsg = "";
+var stopOrg = "";
+var stopOrgMsg = "";
+if (stopUser==="true") {
+	// layer.msg(stopUserMsg,{time: 5000});
+	alert(stopUserMsg);
+}
+if (stopOrg==="true") {
+	// layer.msg(stopOrgMsg,{time: 5000});
+	alert(stopOrgMsg);
+}
+</script> 
+   <div class="w-1210 clearfix" style="margin-top:41px;"> 
+    <a class="fl logo" href="./platform.jspx"> <img src="/docShuju/r/cms/www/shuju/platform/images/logo.png"> </a> 
+    <ul class="fl nav"> 
+     <li> <a href="./platform.jspx"> 首页</a> </li> 
+     <li><a href="platformcatbook.jspx?id=1&amp;hasPublish=1&amp;channelNo=1">古籍书库</a></li> 
+     <li><a href="./platformMeBook.jspx?channelNo=3">我的书架</a></li> 
+    </ul> 
+    <div class="fr nav_r" style="max-width: 270px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"> 
+     <!--<a href="#">登录</a>--> 
+     <a href="javascript:login();">登录</a> 
+     <span>|</span> 
+     <a href="javascript:register();">注册</a> 
+     <!----> 
+     <script>	
+var loginUrl = "ssoLogin.jspx?returnUrl=%2FdocShuju%2FplatformBookDetails.jspx%3Fid%3D2026972";
+var registerUrl = "ssoRegister.jspx?returnUrl=%2FdocShuju%2FplatformBookDetails.jspx%3Fid%3D2026972";
+var loginFlag = true;
+
+function loginConfirm()
+{
+	loginFlag = true;
+	//$('.we4').show();
+}
+
+function registerConfirm()
+{
+	loginFlag = false;
+	//$('.we4').show();
+}
+
+function login()
+{
+    window.location.href = loginUrl;
+//	if (!loginFlag)
+//		$('.we4').hide();
+//	else
+//	{
+//		window.location.href = loginUrl;
+//	}
+}
+
+function register()
+{
+    window.location.href = registerUrl;
+}	
+</script> 
+     <div class="weui_dialog_confirm we4" style="display:none;"> 
+      <div class="weui_mask"></div> 
+      <div class="weui_dialog"> 
+       <div class="weui_dialog_hd"> 
+        <strong class="weui_dialog_title">提示</strong> 
+       </div> 
+       <div class="weui_dialog_bd" style="line-height:1.6;">
+        <center>
+         网站暂不支持个人用户注册
+         <br>机构用户请直接选择IP登录方式
+         <br>个人用户相关功能将在2018年4月23日后全面开放
+         <br>敬请期待
+        </center>
+       </div> 
+       <div class="weui_dialog_ft"> 
+        <a class="weui_btn_dialog primary bb" href="javascript:login();">确定</a> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+  </div>
+  <!-- header end--> 
+  <style>
+@font-face  
+{  
+    font-family:'font00';  
+    src:url('./font/FZSONG_ZhongHuaSongPlane00_20160920.TTF') format('truetype');
+    font-weight:normal;  
+    font-style:normal;  
+}
+@font-face  
+{  
+    font-family:'font02';  
+    src:url('./font/FZSONG_ZhongHuaSongPlane02_20160524.TTF') format('truetype');
+    font-weight:normal;  
+    font-style:normal;  
+}
+@font-face  
+{  
+    font-family:'font15';  
+    src:url('./font/FZSONG_ZhongHuaSongPlane15_20160920.TTF') format('truetype');
+    font-weight:normal;  
+    font-style:normal;  
+}
+</style> 
+  <div class="content"> 
+   <div class="mbx w-1210"> 
+    <p><a href="/docShuju/platform.jspx">首页</a> &gt; <a href="/docShuju/platformcatbook.jspx?id=1&amp;hasPublish=1&amp;channelNo=1">古籍书库</a> &gt; <a href="#">图书详情</a></p> 
+   </div> 
+   <div class="main_04"> 
+    <div class="main_04_1 clearfix"> 
+     <div class="img fl" href="#"> 
+      <img src="https://glwx.zhbc.com.cn/shuju/u/cms/www/201908/13154806jx2w.jpg"> 
+      <p>封面书影</p> 
+     </div> 
+     <div class="img_right fr"> 
+      <div class="title clearfix"> 
+       <h3 class="fl">周易譯注</h3> 
+       <!--<a class="fr on" style="margin-left:10px;" href="http:///introduction?bookid=ZHB010001054&productKey=zkcpb-fbpt"  target="_blank">发表评论</a>--> 
+       <!--<a class="fr scbtn" href="javascript:;"><i class="icon icon-16"></i>收藏</a>--> 
+      </div> 
+      <div class="info fpEncode" onlylarge="true">
+       <style>
+@font-face  
+{  
+    font-family:'myFont23933855_0';  
+    src:url('/docShuju/font/20211229/1177f56c-b4a8-4138-b1cb-fe20a8cd7370.eot?#iefix') format('embedded-opentype'),  
+        url('/docShuju/font/20211229/1177f56c-b4a8-4138-b1cb-fe20a8cd7370.woff') format('woff');
+    font-weight:normal;  
+    font-style:normal;  
+}
+@font-face  
+{  
+    font-family:'myFont23933855_1';  
+    src:url('/docShuju/font/20211229/72863759-e888-42fd-b015-15fb7b514ea9.eot?#iefix') format('embedded-opentype'),  
+        url('/docShuju/font/20211229/72863759-e888-42fd-b015-15fb7b514ea9.woff') format('woff');
+    font-weight:normal;  
+    font-style:normal;  
+}
+@font-face  
+{  
+    font-family:'myFont23933855_2';  
+    src:url('/docShuju/font/20211229/8862398a-4cc1-417a-82ac-2378929c312d.eot?#iefix') format('embedded-opentype'),  
+        url('/docShuju/font/20211229/8862398a-4cc1-417a-82ac-2378929c312d.woff') format('woff');
+    font-weight:normal;  
+    font-style:normal;  
+}
+
+#FCdiv23933855 {font-family:
+'myFont23933855_0'
+,
+'myFont23933855_1'
+,
+'myFont23933855_2'
+;
+font-weight:bold;
+}
+
+#FCdiv23933855 .textbox {font-family:
+'myFont23933855_0'
+,
+'myFont23933855_1'
+,
+'myFont23933855_2'
+;
+font-weight:bold;
+}
+
+
+
+#FCdiv23933855 em {font-weight:bold;}
+#FCdiv23933855 h2 {font-weight:bold;}
+#FCdiv23933855 span.song {font-family:宋体;}
+</style> 
+       <div id="FCdiv23933855" key="23933855"> 
+        <table border="0" width="100%"> 
+         <tbody> 
+          <tr align="left"> 
+           <th width="75" align="right">作者：</th> 
+           <td>周振甫 譯注</td> 
+          </tr> 
+          <tr align="left"> 
+           <th align="right">出版社：</th> 
+           <td>中華書局</td> 
+           <th align="right">出版日期：</th> 
+           <td>2013年03月 </td> 
+          </tr> 
+          <tr align="left"> 
+           <th align="right">分类：</th> 
+           <td>經部/易類</td> 
+           <th align="right">主题词：</th> 
+           <td>哲學\先秦；周易；傳注</td> 
+          </tr> 
+          <tr align="left"> 
+           <th align="right">丛编：</th> 
+           <td>中国古典名著譯注叢書</td> 
+           <th align="right">版次：</th> 
+           <td>第2版</td> 
+          </tr> 
+          <tr align="left"> 
+          </tr> 
+         </tbody> 
+        </table> 
+       </div> 
+      </div> 
+      <div class="input fr" style="margin-top:30px;"> 
+       <div class="in1">
+        <input name="xt" class="input-text fl" id="searchText" value="在书内检索" autocomplete="off" type="text" onfocus="if(value==defaultValue){value='';this.style.color='#333'}" onblur="if(!value){value=defaultValue;this.style.color='#999'}">
+       </div> 
+       <div class="in2">
+        <a href="javascript:void(0);" onclick="inBookSearch();"><input type="submit" class="input_btn" value=""></a>
+       </div> 
+      </div> 
+      <form id="inBookForm" action="platformSearchInBook.jspx"> 
+       <input type="hidden" name="rootId" value="2026972" id="bookId"> 
+       <input type="hidden" name="modelId" value="5"> 
+       <input type="hidden" name="title" value="" id="articleTitle"> 
+       <input type="hidden" name="pageNo" value="1" id="pageNo"> 
+       <input type="hidden" name="order" value="0"> 
+      </form> 
+     </div> 
+    </div> 
+    <div class="main_04_2"> 
+     <div class="info_tit"> 
+      <h4><i class="icon icon-17"></i>内容简介</h4> 
+     </div> 
+     <div class="introduction fpEncode" onlylarge="true">
+      <style>
+@font-face  
+{  
+    font-family:'myFont62141806_1';  
+    src:url('/docShuju/font/20240207/283668a2-67af-4185-a41f-5854f2d2020d.eot?#iefix') format('embedded-opentype'),  
+        url('/docShuju/font/20240207/283668a2-67af-4185-a41f-5854f2d2020d.woff') format('woff');
+    font-weight:normal;  
+    font-style:normal;  
+}
+@font-face  
+{  
+    font-family:'myFont62141806_2';  
+    src:url('/docShuju/font/20240207/4ff4c4c7-f035-4012-a47d-7259626e4c9b.eot?#iefix') format('embedded-opentype'),  
+        url('/docShuju/font/20240207/4ff4c4c7-f035-4012-a47d-7259626e4c9b.woff') format('woff');
+    font-weight:normal;  
+    font-style:normal;  
+}
+@font-face  
+{  
+    font-family:'myFont62141806_3';  
+    src:url('/docShuju/font/20240207/4e5e7d84-9711-4a13-bf7a-90c2d17ce396.eot?#iefix') format('embedded-opentype'),  
+        url('/docShuju/font/20240207/4e5e7d84-9711-4a13-bf7a-90c2d17ce396.woff') format('woff');
+    font-weight:normal;  
+    font-style:normal;  
+}
+
+#FCdiv62141806 {font-family:
+''
+,
+'myFont62141806_1'
+,
+'myFont62141806_2'
+,
+'myFont62141806_3'
+;
+font-weight:bold;
+}
+
+#FCdiv62141806 .textbox {font-family:
+''
+,
+'myFont62141806_1'
+,
+'myFont62141806_2'
+,
+'myFont62141806_3'
+;
+font-weight:bold;
+}
+
+
+
+#FCdiv62141806 em {font-weight:bold;}
+#FCdiv62141806 h2 {font-weight:bold;}
+#FCdiv62141806 span.song {font-family:宋体;}
+</style> 
+      <div id="FCdiv62141806" key="62141806"> 
+       <p>《周易譯注》，是周振甫譯注古籍的力作之一。本書内容大致可分爲兩部分。《前言》部分集中介紹了有關《周易》的基本知識。其中《周易釋名》《卦爻和卦爻辭》《易傳的象數説》以及對《易傳》的産生年代、《周易》思想的研討等節都是撰者借鑒、吸收古今易學研究的優秀成果。正文部分對經、傳進行了注釋，譯爲現代漢語。廣泛運用各種材料，通過分析鑒别，爲今譯奠定了良好基礎。該書還提供了一些閲讀《周易》的經驗體會，力求使讀者不僅知其然，而且知其所以然。</p> 
+      </div> 
+     </div> 
+    </div> 
+    <div class="main_04_2"> 
+     <div class="info_tit"> 
+      <h4><i class="icon icon-18"></i>目录</h4> 
+     </div> 
+     <div class="catalog"> 
+      <div class="jstree" id="jstree1"></div>
+      <!--jstree end--> 
+     </div> 
+    </div> 
+   </div>
+   <!--content end--> 
+   <!-- footer --> 
+   <div class="footer"> 
+    <div class="w-1210 clearfix"> 
+     <div class="fl"> 
+      <img src="/docShuju/r/cms/www/shuju/platform/images/logo_btm.png"> 
+      <!-- <p>中華書局於1912年1月在上海成立，1927年於香港皇后大道中設立香港分局，自此在香港不間斷經營近百年。1988年經重新註冊成為香港聯合出版（集團）有限公司屬下重要成員機構。</p> --> 
+      <p style="margin-top: 5px;"><a href="https://beian.miit.gov.cn">©2016-2021 京ICP备16022726号-5</a><a style="cursor:pointer;text-decoration:underline;color:inherit;" href="http:///helpcore?font" target="_blank">下载字体</a>&nbsp;&nbsp;<a style="cursor:pointer;text-decoration:underline;color:inherit;" href="../阅读器.rar" target="_blank">下载镜像版阅读器</a> &nbsp;&nbsp;<a style="cursor:pointer;text-decoration:underline;color:inherit;" href="http://abcircle.ancientbooks.cn/abcircle/group/detail/115" target="_blank">用户反馈</a>&nbsp;&nbsp;<span style="color: #ccc">210.10.77.124</span></p> 
+     </div> 
+     <div class="fr"> 
+      <a href="http://" target="_blank"><img style="width:120px;" src="/docShuju/r/cms/www/shuju/platform/images/logo_btm01.png"></a> 
+      <a href="http://www.zhbc.com.cn" target="_blank"><img src="/docShuju/r/cms/www/shuju/platform/images/logo_btm02.png"></a> 
+     </div> 
+    </div> 
+   </div>
+   <!-- footer end-->
+   <style>
+.shadowBg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 100;
+}
+.confirmWin {
+    background-color: #fff;
+    border-radius: 5px;
+    left: 50%;
+    margin-left: -135px;
+    margin-top: -70px;
+    padding-top: 20px;
+    position: fixed;
+    text-align: center;
+    top: 50%;
+    width: 270px;
+    z-index: 101;
+}
+.confirmWin p.f2 {
+    color: #664833;
+    font-size: 16px;
+}
+.confirmWin p {
+    text-align: center;
+}
+.clearfix::after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.btnList {
+    border-top: 1px solid #cccccc;
+}
+.btnList li {
+    float: left;
+    width: 50%;
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+    height: 40px;
+}
+.btnList li a {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    line-height: 40px;
+    color: #664833;
+}
+</style> 
+   <div class="shadowBg" id="shadowBg" style="display:none"></div> 
+   <div class="confirmWin" id="confirmWin" style="display:none"> 
+    <p class="f2">确认删除吗？</p> 
+    <br> 
+    <input type="hidden" id="delid"> 
+    <input type="hidden" id="txt"> 
+    <ul class="btnList clearfix"> 
+     <li><a onclick="countinue();" href="javascript:void();">确定</a></li> 
+     <li><a onclick="closeWin();" href="javascript:void();">取消</a></li> 
+    </ul> 
+   </div> 
+   <div class="shadowBg" id="shadowBg1" style="display:none"></div> 
+   <div class="confirmWin" id="confirmWin1" style="display:none"> 
+    <p class="f2">确认清空历史记录吗？</p> 
+    <input type="hidden" id="delid"> 
+    <input type="hidden" id="txt"> 
+    <ul class="btnList clearfix"> 
+     <li><a onclick="deleteAll();" href="javascript:void();">确定</a></li> 
+     <li><a onclick="closeWin1();" href="javascript:void();">取消</a></li> 
+    </ul> 
+   </div> 
+   <div class="confirmWin" id="confirmCurrentWin" style="display:none"> 
+    <p class="f2">确认删除吗？</p> 
+    <br> 
+    <input type="hidden" id="delCurrid"> 
+    <ul class="btnList clearfix"> 
+     <li><a onclick="countinueDelCurrent();" href="javascript:void();">确定</a></li> 
+     <li><a onclick="closeCurrentWin();" href="javascript:void();">取消</a></li> 
+    </ul> 
+   </div> 
+   <script type="text/javascript">
+$(document).ready(function ($) {
+	InitMenuTree();
+	
+	});
+
+function InitMenuTree() { 
+	  $('#jstree1').data('jstree', false); 
+	  $.ajax({
+	        async: false,
+	        type : "GET",
+	        url : '/docShuju/platformbookcolumn.jspx?id=2026972',
+	        success : function(data) {
+	        	$('#jstree1').jstree({  
+			    	 'core': {  "check_callback" : true,
+			    		             "data": data ,
+			    		             "plugins" : [
+			    		                      	"contextmenu", "dnd", "search",
+			    		               ]
+			                    } 
+			     }).bind("select_node.jstree", function(event, data) {
+			    	             var inst = data.instance;
+			                     var selectedNode = inst.get_node(data.selected);  
+			    	             var level = $("#"+selectedNode.id).attr("aria-level");  
+			    	             // loadConfig(inst, selectedNode);
+			    	             var contentId='2026972';
+			    	             var noteId=selectedNode.id;
+			    	             if(noteId.indexOf("_")>0){
+			    	            	 noteId=noteId.substring(0,noteId.indexOf("_"));
+			    	             }
+								if (noteId == "j1") {
+									window.location.href="/docShuju/platformBookDetails.jspx?id="+contentId;
+									return;
+								}
+
+								var  hasPara="0";
+								if(selectedNode.children.length>0){
+									$.ajax({
+										type: "post",
+										url: "platformHasOpen.jspx?contentId="+noteId,
+										success: function(data){
+											hasPara=data.hasPara;
+                                            hasPara="1";
+											if(noteId!=contentId&&hasPara=="1"){
+												window.location.href="/docShuju/platformViewArticle.jspx?id="+noteId;
+											}
+										}
+									});
+								}else{
+									if(noteId!=contentId){
+										window.location.href="/docShuju/platformViewArticle.jspx?id="+noteId;
+									}
+
+								}
+			     }).bind("open_node.jstree", function(event, data) {
+			    	 var inst = data.instance;
+   	                 var id = data.node.id;
+   	                 var level = $("#"+id).attr("aria-level");  
+   	                  loadConfig(inst, data.node);  
+            });  
+	        }
+	    });
+		     
+	}; 
+	
+	  function loadConfig(inst, selectedNode){  
+	            var temp = selectedNode.text;  
+	            var id=selectedNode.id;
+                $.ajax({  
+                url : "/docShuju/platformbookchildcolumn.jspx?id="+id,  
+                dataType : "json",  
+	            type : "POST",  
+                success : function(data) {  
+                   if(data) {  
+                	  if(data.length==0){
+                		  window.location.href="/docShuju/platformViewArticle.jspx?id="+id;
+                	  }
+                      selectedNode.children = [];
+                       $('#'+id).jstree("_append_json_data","#"+id,data,function(){
+                           // 这个回调函数要加,不然会报错，即使这个函数里面什么也不做
+                       });
+//                      $.each(data, function (i, item) {
+//                              inst.create_node(selectedNode,item,"last");
+//                       });
+                           inst.open_node(selectedNode);  
+                    }else{  
+                    }   
+                }  
+            });  
+       }  
+		function Shutdown(noteId){
+			$("#shadowBg").show();
+			$("#confirmWin").show();
+			$("#delid").val(noteId);
+		    
+		}
+
+		function countinue(){
+			var noteId=$("#delid").val();
+			$.ajax({
+			       type: "post",
+				   url: "platformDeletemynote.jspx?noteId="+noteId,
+				   success: function(data){
+			       $("#delid").val("");
+			       window.location.reload();
+			      
+		       }
+		    });
+		}
+
+		function closeWin(){
+		    $("#delid").val("");
+			  $("#shadowBg").hide();
+			  $("#confirmWin").hide();
+		}
+		
+		function inBookSearch(){
+			var title=$("#searchText").val();
+        	if(title=="在书内检索"){
+        		return;
+        	}
+        	if (!testChinese(title,true))
+        		return;
+			$("#articleTitle").val(title);
+			$("#inBookForm").submit();
+			
+		}
+		
+		$("body").keydown(function(event) {
+		    if (event.keyCode == "13") {//keyCode=13是回车键
+		    	inBookSearch();
+		    }
+		});
+</script> 
+  </div>
+ </body>
+</html>

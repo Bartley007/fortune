@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 知命 Fortune Teller Master
 
-## Getting Started
+面向传统中国术数知识学习的可解释系统。项目将确定性计算、传统资料检索和现代语言解释分层处理，包含八字排盘、易卦推演、观音灵签、典籍检索与个人知识库五个前端模块。
 
-First, run the development server:
+> 本项目用于传统文化学习、知识探索和课程演示，不构成医疗、法律、投资或其他重要现实决策建议。
+
+## 当前状态
+
+- 观音百签：完整结构化签库与服务端安全随机抽签。
+- 知识检索：已接入 363 条结构化知识页面。
+- 八字排盘：前端和 API 契约完成；未配置 Python 服务时返回明确标记的 Mock 数据。
+- 易卦推演：前端和 API 契约完成；未配置 Python 服务时返回明确标记的 Mock 数据。
+- 知识图谱：接口与展示骨架完成，实体关系数据待入库。
+- 会话和笔记：接口完成，目前使用进程内存，服务重启后清空。
+
+## 环境要求
+
+- Node.js 20 或更高版本
+- npm 10 或更高版本
+- 可选：Python 算法服务
+
+## 本地启动
 
 ```bash
+git clone <repository-url>
+cd fortune-system
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+浏览器打开 [http://localhost:3000](http://localhost:3000)。如果端口被占用，Next.js 会在终端显示实际端口。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Python 算法服务尚未启动时可以保持 `.env.local` 中对应变量为空；系统会使用带有 Mock 标记的兼容结果。如果已经运行 Python/FastAPI 服务，配置：
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+PYTHON_ALGORITHM_BASE_URL=http://127.0.0.1:8000
+```
 
-## Learn More
+具体请求和返回结构见 [Python 算法接入说明](docs/API_INTEGRATION.md)。
 
-To learn more about Next.js, take a look at the following resources:
+## 常用命令
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev        # 启动开发服务器
+npm test           # 运行测试
+npm run lint       # 运行 ESLint
+npm run typecheck  # 运行 TypeScript 检查
+npm run check      # 依次执行测试、Lint 和类型检查
+npm run build      # 生产构建
+npm start          # 启动生产构建
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 项目结构
 
-## Deploy on Vercel
+```text
+app/
+  api/              Next.js 对外 API 与输入校验
+  bazi/             八字页面
+  divination/       易卦页面
+  guanyin/          观音灵签页面
+  knowledge/        典籍检索页面
+  library/          个人知识库页面
+lib/
+  contracts/        前后端共享 TypeScript 契约
+  server/           Python 服务适配器
+  bazi/             八字服务入口
+  divination/       起卦服务入口
+  guanyin/          灵签数据校验和查询
+  knowledge/        知识库检索
+  session/          临时会话与笔记存储
+data/               结构化知识数据及来源材料
+sticks/             观音百签数据
+docs/               集成与协作文档
+tests/              自动化测试
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+算法组通常只需对照 `lib/contracts` 实现 Python 返回结构。Next.js 会通过 `lib/server/python-client.ts` 调用 Python，不需要修改 React 页面。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## API
+
+| Method | Route | 状态 |
+| --- | --- | --- |
+| POST | `/api/bazi/chart` | 契约完成，等待 Python 算法 |
+| POST | `/api/divination/cast` | 契约完成，等待 Python 算法 |
+| POST | `/api/guanyin-lot/draw` | 可用 |
+| GET | `/api/knowledge/search?q=` | 可用 |
+| GET | `/api/knowledge/graph?concept=` | Mock 图谱 |
+| GET | `/api/knowledge/compare?q=` | 可用 |
+| POST | `/api/session/event` | 临时内存存储 |
+| POST | `/api/user/notes` | 临时内存存储 |
+
+所有浏览器端接口均返回 `lib/contracts/api.ts` 中定义的统一响应结构。
+
+## 数据说明
+
+主知识文件位于 `data/knowledge_sources_complete/knowledge_sources_pages.json`。原始网页和 PDF 用于来源复核，具体来源范围、版权处理和字段说明见 [数据说明](data/knowledge_sources_complete/README.md)。
+
+根目录的原始 ZIP 包不会进入 Git；可复现项目所需的解压数据已经位于 `data/`。
+
+## 协作约定
+
+1. 从 `main` 拉取最新代码并创建功能分支。
+2. 不提交 `.env.local`、密钥、`node_modules` 或 `.next`。
+3. 修改接口结构时同步更新 `lib/contracts` 和 `docs/API_INTEGRATION.md`。
+4. 提交前运行 `npm run check` 和 `npm run build`。
+5. Mock 数据必须设置 `meta.mock: true` 并返回清晰 warning。

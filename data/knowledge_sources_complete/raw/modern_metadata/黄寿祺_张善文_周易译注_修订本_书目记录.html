@@ -1,0 +1,454 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>黄寿祺、张善文：《周易译注（修订本）》，上海：上海古籍出版社，2006年6月.-陕西师范大学医学与文明研究院</title><meta name="pageType" content="3">
+<meta name="pageTitle" content="黄寿祺、张善文：《周易译注（修订本）》，上海：上海古籍出版社，2006年6月.">
+<META Name="keywords" Content="陕西师范大学医学与文明研究院,黄寿祺、张善文：《周易译注（修订本）》,上海：上海古籍出版社,2006年6月." />
+<META Name="description" Content="黄寿祺、张善文：《周易译注（修订本）》，上海：上海古籍出版社，2006年6月.  作  者：    添加日期：  --  书  号：  B11.4  刊  &amp;n..." />
+
+    
+    <meta name="description" content="" />
+    <meta name="wap-font-scale" content="no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="../../css/cui.css" />
+    <link rel="stylesheet" href="../../css/lib.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/less.css">
+<!--Announced by Visual SiteBuilder 9-->
+<script language="javascript" src="../../_sitegray/_sitegray.js"></script>
+<!-- CustomerNO:77656262657232306975475253535742000400004152 -->
+<link rel="stylesheet" type="text/css" href="../../content.vsb.css" />
+<script type="text/javascript" src="/system/resource/js/counter.js"></script>
+<script type="text/javascript">_jsq_(1010,'/content.jsp',2098,1863621938)</script>
+</head>
+<body>
+
+    <div class="header">
+        <div class="hd">
+            <div class="wp">
+                <div class="logo">
+<!-- 网站logo图片地址请在本组件"内容配置-网站logo"处填写 -->
+<a href="../../index.htm" title="陕西师范大学医学与文明研究"><img src="../../images/logo.png" alt=""></a></div>
+                <span class="menuBtn"></span>
+                <div class="top-r">
+                    <a href="http://rcshm.snnu.edu.cn/rcshmen/" class="lang">英文站</a>
+                    <div class="so">
+                        <!-- 3.1.3版本 -->
+
+
+
+<script language="javascript" src="/system/resource/js/base64.js"></script><script language="javascript" src="/system/resource/js/jquery/jquery-latest.min.js"></script><script language="javascript" src="/system/resource/vue/vue.js"></script><script language="javascript" src="/system/resource/vue/bluebird.min.js"></script><script language="javascript" src="/system/resource/vue/axios.js"></script><script language="javascript" src="/system/resource/vue/polyfill.js"></script><script language="javascript" src="/system/resource/vue/token.js"></script><LINK href="/system/resource/vue/static/element/index.css" type="text/css" rel="stylesheet"><script language="javascript" src="/system/resource/vue/static/element/index.js"></script><script language="javascript" src="/system/resource/vue/static/public.js"></script><script language="javascript" src="/system/resource/openapp/search/js/containsHtmlTags.js"></script><script language="javascript" src="/system/resource/openapp/search/layui/layui.js"></script>
+<div id="divu1"></div>
+<script type="text/html" id="htmlu1">
+    <div id="appu1">
+        <div v-if="!isError">
+        <form action="">
+                            <input type="text" placeholder="请输入您要搜索的关键词" class="inp"  autocomplete=off v-model=query.keyWord @keyup.enter="onSubmit">
+                            <button class="btn" v-on:click="onSubmit()"></button>
+                        </form>
+        
+            
+        </div>
+        <div v-if="isError" style="color: #b30216; font-size:18px;text-align: center;padding:20px;">
+            应用维护中！
+        </div>
+    </div>
+</script>
+<script>
+    $("#divu1").html($("#htmlu1").text());
+</script>
+<script>
+    var appOwner = "1863621938";
+    var token = gettoken(10);
+    var urlPrefix = "/aop_component/";
+
+    jQuery.support.cors = true;
+    $.ajaxSetup({
+        beforeSend: function (request, settings) {
+            request.setRequestHeader("Authorization", token);
+            request.setRequestHeader("owner", appOwner);
+        }
+    });
+
+    new Vue({
+        el: "#appu1",
+        data: function () {
+            return {
+                query: {
+                    keyWord: "",//搜索关键词
+                    owner: appOwner,
+                    token: token,
+                    urlPrefix: urlPrefix,
+                    lang:"i18n_zh_CN"
+                },
+                isError: false
+            }
+        },
+        mounted: function () {
+            var _this = this;
+            // _this.init();
+        },
+        methods: {
+            init: function(){
+                $.ajax({
+                    url: "/aop_component//webber/search/test",
+                    type: "get",
+                    success: function (response) {
+                        if (response.code == "0000") {
+                        } else if (response.code == "220") {
+                            _this.isError = true;
+                            console.log(response);
+                        } else if (!response.code) {
+                            _this.isError = true;
+                            console.log(response);
+                        }
+                    },
+                    error: function (response) {
+                        _this.isError = true;
+                    }
+                });
+            },
+            onSubmit: function (e) {
+                var url = "/aop_views/search/modules/resultpc/soso.html";
+                if ("10" == "1" || "10" == "2") {
+                    url = "" + url;
+                }
+                var _this = this;
+                var query = _this.query;
+                if (url.indexOf("?") > -1) {
+                    url = url.split("?")[0];
+                }
+                if (query.keyWord) {
+                    var query = new Base64().encode(JSON.stringify(query));
+                    window.open(url + "?query=" + query);
+                } else {
+                    alert("请填写搜索内容")
+                }
+            },
+        }
+    })
+</script>
+
+<script>
+   var appElementu1 = document.querySelector("#appu1");
+   if (appElementu1 && appElementu1.__vue__) {
+
+   } else {
+      $("#divu1").html($("#htmlu1").text());
+      var appOwner = "1863621938";   
+      var urlPrefix = "/aop_component/";
+      var ifLogin="";
+      var token = ifLogin=='true'?gettoken(10, true).trim():'tourist';
+      if (containsHtmlTags(token) || !token) { 
+         token = 'tourist';
+      }
+      jQuery.support.cors = true;
+      $.ajaxSetup({
+        beforeSend: function (request, settings) {
+            request.setRequestHeader("Authorization", token);
+            request.setRequestHeader("owner", appOwner);
+        }
+      });
+      var queryInfou1 = {
+        query: {
+            keyWord: "",//搜索关键词
+            owner: appOwner,
+            token: token,
+            urlPrefix: urlPrefix,
+            lang:"i18n_zh_CN"
+        },
+        isError: false
+      };
+      function keyUpFunu1(e){
+        var theEvent = e || window.event;
+        var keyCode = theEvent.keyCode || theEvent.which || theEvent.charCode;
+        if(keyCode == 13){
+          onSubmitu1();
+        }
+      };
+
+      function onSubmitu1(e) {
+        queryInfou1.query.keyWord= $("#appu1  .qwss").val();
+        
+        var url = "/aop_views/search/modules/resultpc/soso.html";      
+        if ("10" == "1" || "10" == "2") {
+           url = "" + url;
+        }
+        var query = queryInfou1.query;
+        if (url.indexOf("?") > -1) {
+            url = url.split("?")[0];
+        }
+        if (query.keyWord) {
+            var query = new Base64().encode(JSON.stringify(query));
+            window.open(url + "?query=" + query);
+        } else {
+            alert("请填写搜索内容")
+        }
+      };
+   }
+</script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav">
+            <div class="wp">
+                <ul>
+    <li> <a href="../../index.htm" title="网站首页" class="v1">网站首页</a>
+  <i class="down"></i>
+    <dl>
+      <dd><a href="../../index/yyxw_.htm">研院新闻 </a></dd>
+      <dd><a href="../../index/xsjl.htm">学术交流</a></dd>
+      <dd><a href="../../index/ztzl.htm">专题专栏</a></dd>
+    </dl>
+  </li>
+    <li> <a href="../../yygk1.htm" title="研院概况" class="v1">研院概况</a>
+  <i class="down"></i>
+    <dl>
+      <dd><a href="../../yygk1/yzjy.htm">院长寄语</a></dd>
+      <dd><a href="../../yygk1/smzr.htm">使命责任</a></dd>
+      <dd><a href="../../yygk1/ghzc.htm">规划章程</a></dd>
+      <dd><a href="../../yygk1/zzjg.htm">组织机构</a></dd>
+      <dd><a href="../../yygk1/fzlc.htm">发展历程</a></dd>
+      <dd><a href="../../yygk1/lxwm.htm">联系我们</a></dd>
+    </dl>
+  </li>
+    <li> <a href="../../xwzx/yydt.htm" title="新闻中心" class="v1">新闻中心</a>
+  <i class="down"></i>
+    <dl>
+      <dd><a href="../../xwzx/yydt.htm">研院动态</a></dd>
+      <dd><a href="../../xwzx/xsdt.htm">学术动态</a></dd>
+      <dd><a href="../../xwzx/tzgg.htm">通知公告</a></dd>
+    </dl>
+  </li>
+    <li> <a href="../../xstd/zzry.htm" title="学术团队" class="v1">学术团队</a>
+  <i class="down"></i>
+    <dl>
+      <dd><a href="../../xstd/zzry.htm">专职人员</a></dd>
+      <dd><a href="../../xstd/jzry.htm">兼职人员</a></dd>
+      <dd><a href="../../xstd/tyyjry.htm">特邀研究人员</a></dd>
+      <dd><a href="../../xstd/fwxz.htm">访问学者</a></dd>
+      <dd><a href="../../xstd/kytd.htm">科研团队</a></dd>
+      <dd><a href="../../xstd/bsh.htm">博士后</a></dd>
+      <dd><a href="../../xstd/bsyjs.htm">博士研究生</a></dd>
+      <dd><a href="../../xstd/ssyjs.htm">硕士研究生</a></dd>
+    </dl>
+  </li>
+    <li> <a href="../../kxyj/xszq.htm" title="科学研究" class="v1">科学研究</a>
+  <i class="down"></i>
+    <dl>
+      <dd><a href="../../kxyj/xszq.htm">学术旨趣</a></dd>
+      <dd><a href="../../kxyj/kyxm.htm">科研项目</a></dd>
+      <dd><a href="../../kxyj/dbcg.htm">代表成果</a></dd>
+      <dd><a href="../../kxyj/xsjl.htm">学术奖励</a></dd>
+    </dl>
+  </li>
+    <li> <a href="../../rcpy/bkspy.htm" title="人才培养" class="v1">人才培养</a>
+  <i class="down"></i>
+    <dl>
+      <dd><a href="../../rcpy/bkspy.htm">本科生培养</a></dd>
+      <dd><a href="../../rcpy/ssspy.htm">硕士生培养</a></dd>
+      <dd><a href="../../rcpy/bsspy.htm">博士生培养</a></dd>
+      <dd><a href="../../rcpy/byxy.htm">毕业校友</a></dd>
+    </dl>
+  </li>
+    <li> <a href="../../shfw.htm" title="社会服务" class="v1">社会服务</a>
+  
+  </li>
+    <li> <a href="../../hzjl/xshy.htm" title="合作交流" class="v1">合作交流</a>
+  <i class="down"></i>
+    <dl>
+      <dd><a href="../../hzjl/xshy.htm">学术会议</a></dd>
+      <dd><a href="../../hzjl/xsjz.htm">学术讲座</a></dd>
+      <dd><a href="../../hzjl/gjhzjl.htm">国际合作交流</a></dd>
+    </dl>
+  </li>
+    <li> <a href="../../yyqk/qkjj.htm" title="研院期刊" class="v1">研院期刊</a>
+  <i class="down"></i>
+    <dl>
+      <dd><a href="../../yyqk/qkjj.htm">期刊简介</a></dd>
+      <dd><a href="../../yyqk/tgzn.htm">投稿指南</a></dd>
+      <dd><a href="../../yyqk/xkyd.htm">现刊阅读</a></dd>
+      <dd><a href="../../yyqk/gkml.htm">过刊目录</a></dd>
+    </dl>
+  </li>
+    <li> <a href="../../tszl.htm" title="图书资料" class="v1">图书资料</a>
+  
+  </li>
+    <li> <a href="../../xzzx.htm" title="下载中心" class="v1">下载中心</a>
+  
+  </li>
+</ul>
+            </div>
+        </div>
+    </div>
+
+        <script language="javascript" src="/system/resource/js/dynclicks.js"></script>
+           
+                <div class="ban" style="background-image: url(../../images/banner1111.jpg);"></div>
+                   
+                
+        
+
+
+        <div class="main">
+        <div class="row-b1 row-b1-1">
+            <div class="wp">
+                <div class="col-l">
+                    <div class="m-t2">
+                        <h3>
+图书资料</h3>
+                        <em>Books And Materials</em>
+                    </div>
+                    <div class="snv"><ul>
+
+</ul></div>
+                </div>
+                <div class="col-r">
+                    <div class="g-top">
+                        <h3 class="tit">
+图书资料</h3>
+                        <div class="cur">当前您的位置：
+                        <a href="../../index.htm"><span>网站首页</span></a>
+                &gt; 
+                <a href="../../tszl.htm"><span>图书资料</span></a>
+                &gt; 
+                正文
+</div>
+                    </div>
+                    <div class="m-details">
+
+<script language="javascript" src="../../_dwr/interface/NewsvoteDWR.js"></script><script language="javascript" src="../../_dwr/engine.js"></script><script language="javascript" src="/system/resource/js/news/newscontent.js"></script><script language="javascript" src="/system/resource/js/ajax.js"></script><form name="_newscontent_fromname">
+
+
+                        <h1>黄寿祺、张善文：《周易译注（修订本）》，上海：上海古籍出版社，2006年6月.</h1>
+                        <div class="info">
+                            <span>发布日期：2019-07-24</span>
+                            <span>浏览量：<script>_showDynClicks("wbnews", 1863621938, 2098)</script></span>
+                        </div>
+                        
+ 
+                       
+                    
+
+
+   <div id="vsb_content" class="txt"><div class="v_news_content">
+<tr><td height="35" colspan="4" align="center" bgcolor="#FFFFFF" style="font-size:20px; font-weight:bold;">&nbsp;黄寿祺、张善文：《周易译注（修订本）》，上海：上海古籍出版社，2006年6月.</td></tr>
+<tr>
+ <td width="23%" height="35" align="center" bgcolor="#FFFFFF">&nbsp;作&nbsp;&nbsp;者：</td>
+ <td width="30%" align="left" bgcolor="#FFFFFF">&nbsp;</td>
+ <td width="23%" align="center" bgcolor="#FFFFFF">&nbsp;添加日期：</td>
+ <td width="27%" align="left" bgcolor="#FFFFFF">&nbsp;--</td>
+</tr>
+<tr>
+ <td height="35" align="center" bgcolor="#FFFFFF">&nbsp;书&nbsp;&nbsp;号：</td>
+ <td height="35" align="left" bgcolor="#FFFFFF">&nbsp;B11.4</td>
+ <td height="35" align="center" bgcolor="#FFFFFF">&nbsp;刊&nbsp;&nbsp;&nbsp;&nbsp;号：</td>
+ <td height="35" align="left" bgcolor="#FFFFFF">&nbsp;文汇楼C518</td>
+</tr>
+<tr>
+ <td height="35" align="center" bgcolor="#FFFFFF">&nbsp;出版社：</td>
+ <td height="35" align="left" bgcolor="#FFFFFF">&nbsp;</td>
+ <td height="35" align="center" bgcolor="#FFFFFF">&nbsp;书架：</td>
+ <td height="35" align="left" bgcolor="#FFFFFF">&nbsp;1架4层</td>
+</tr>
+<tr><td height="35" colspan="4" align="center" bgcolor="#CCCCCC">&nbsp;<strong>详细内容</strong></td></tr>
+<tr><td height="200" colspan="4" align="left" valign="top" bgcolor="#FFFFFF">&nbsp;</td></tr>
+</div></div>
+
+
+</form>
+<style>
+#vsb_content img{height: auto!important;}
+</style>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="fd-con">
+            <div class="wp">
+                <div class="fd-link">
+                    <script language="javascript" src="/system/resource/js/openlink.js"></script><dl>
+                        <dt>--- 校内链接 --- </dt>
+                        <dd>
+    <a href="http://www.snnu.edu.cn/" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79692)">陕西师范大学</a>
+ </dd>
+                    </dl>
+                    <dl>
+                        <dt>--- 校外链接 ---</dt>
+                        <dd>
+    <a href="http://imh.bjmu.edu.cn/" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79662)">北大医学人文研究院</a>
+    <a href="javascript:void(0)" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79663)">上海大学马斯托禁毒政策研究中心</a>
+    <a href="javascript:void(0)" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79664)">伦敦学院大学(UCL)维尔康医史研究中心</a>
+    <a href="http://www2.warwick.ac.uk/fac/arts/history/chm/" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79665)">华威大学医疗史研究中心</a>
+    <a href="javascript:void(0)" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79666)">牛津大学维尔康医疗史系</a>
+    <a href="javascript:void(0)" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79667)">曼彻斯特大学维尔康医疗史研究中心</a>
+    <a href="javascript:void(0)" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79668)">达拉默大学疾病和医疗史研究中心</a>
+    <a href="http://ghsm.hms.harvard.edu/" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79669)">哈佛大学全球健康与社会医学系</a>
+    <a href="http://www.hopkinshistoryofmedicine.org/" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79670)">约翰·霍普金斯大学医疗史系</a>
+    <a href="http://medicine.yale.edu/histmed/" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79671)">耶鲁大学医学中心医疗史系</a>
+    <a href="http://www.med.wisc.edu/departments/medical-history-bioethics/380" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79672)">威斯康星大学医疗史和生物伦理学系</a>
+    <a href="http://med.stanford.edu/bioethics.html" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79673)">斯坦福大学的生物医学伦理中心</a>
+    <a href="http://fishbein.uchicago.edu/" title="" onclick="_addDynClicks(&#34;wburl&#34;, 1863621938, 79674)">芝加哥大学莫里斯· 菲什拜因科学与医学...</a>
+</dd>
+                    </dl>
+                </div>
+                <script language="javascript" src="/system/resource/js/news/mp4video.js"></script>
+<div class="fd-content"> 
+ <h3 class="tit"> <span>联系我们</span> </h3> 
+ <div class="desc"> 
+  <p> 通讯地址：陕西省西安市长安区西长安街620号陕西师范大学长安校区文渊楼3段601-602室 </p> 
+  <p> 邮编：710119 &nbsp;电子邮箱：rcshm@snnu.edu.cn；imc_snnu@126.com </p> 
+ </div> 
+</div>
+                 <div class="fd-share">    <a href="javascript:void(0);" class="i1" onclick="_addDynClicks(&#34;wbimage&#34;, 1863621938, 69262)">
+<span class="qr"><img src="../../images/code.jpg" alt=""></span>
+</a>
+                    
+<a href="javascript:void(0);" class="i2" onclick="_addDynClicks(&#34;wbimage&#34;, 1863621938, 69261)">
+<span class="qr"><img src="../../images/2-2.png" alt=""></span>
+</a>
+                    
+<a href="javascript:void(0);" class="i3" onclick="_addDynClicks(&#34;wbimage&#34;, 1863621938, 69260)">
+<span class="qr"><img src="../../images/3-3.png" alt=""></span>
+</a>
+                    
+<a href="javascript:void(0);" class="i4" onclick="_addDynClicks(&#34;wbimage&#34;, 1863621938, 69259)">
+<span class="qr"><img src="../../images/4.png" alt=""></span>
+</a>
+                    
+</div>
+            </div>
+        </div>
+        <!-- 版权内容请在本组件"内容配置-版权"处填写 -->
+<div class="fd-bot">CopyRight © 2012-2022 Inc. 陕西师范大学医学与文明研究院 版权所有</div>
+    </div>
+    
+    <script src="../../js/jquery.js"></script>
+    <script src="../../js/jq.js"></script>
+    <script src="../../js/lib.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

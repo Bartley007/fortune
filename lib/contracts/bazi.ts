@@ -1,0 +1,3 @@
+export interface BaziChartRequest { birth_date:string; birth_time:string; birth_place:string; gender:"female"|"male"|"unspecified"; timezone?:string; calendar?:"solar"|"lunar" }
+export interface BaziPillar { label:"year"|"month"|"day"|"hour"; stem:string; branch:string; element:string; ten_god:string }
+export interface BaziChartResult { pillars:BaziPillar[]; day_master:{stem:string;element:string;strength:"strong"|"balanced"|"weak"}; elements:Record<"wood"|"fire"|"earth"|"metal"|"water",number>; luck_cycles:Array<{start_age:number;pillar:string}>; annual_fortune:Array<{year:number;pillar:string}>; overview:string; references:{career:string;study:string;wealth:string} }

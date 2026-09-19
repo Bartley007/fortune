@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang ="ja">
+	<head>
+                    <!-- Global site tag (gtag.js) - Google Analytics -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-136753088-1"></script>
+            <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-136753088-1');
+            </script>
+        		<meta charset="utf-8">
+		<meta name="csrf-token" content="nVvIAq4FJnufIVZz0RFjOCaik7W88GJ61nbZWpSc">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
+		
+		<title>五行大義校註☆〔増補版〕☆ | 本の総合カタログBooks 出版書誌データベース</title>
+		<link rel="icon" type="image/png" href="/images/favicon.ico">
+		<link rel="stylesheet" href="/css/base.css?date=20260914185903">
+		<link rel="stylesheet" href="/css/header.css?date=20260914185903">
+		<link rel="stylesheet" href="/css/top.css?date=20260914185903">
+		<link rel="stylesheet" href="/css/searchforbooks.css?date=20260914185903">
+		<link rel="stylesheet" href="/css/searchforaccessiblebooks.css?date=20260914185903">
+		<link rel="stylesheet" href="/css/calendar.css?date=20260914185903">
+		<link rel="stylesheet" href="/css/footer.css?date=20260914185903">
+		<!--追加するcssをここで読み込む　-->
+		    <link rel="stylesheet" type="text/css" href="/css/detail.css?date=20260914185903" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<link rel="stylesheet" href="/css/loading.css?date=20260914185903">
+
+<section id="loading-wrap" aria-busy="true" aria-label="Loading domino">
+	<div class="progressbar">
+		<div class="presentation"></div>
+		<div class="presentation"></div>
+		<div class="presentation"></div>
+		<div class="presentation"></div>
+		<div class="presentation"></div>
+		<div class="presentation"></div>
+		<div class="presentation"></div>
+	</div>
+	<p>Books</p>
+</section>
+
+<script>
+	// ページ全体が完全に読み込まれた後、ロードアニメーションを非表示にする
+	// $(window).on('load',function(){
+	// 	$("#loading-wrap").delay(800).fadeOut(600);
+	// })
+
+	// DOMの読み込みが完了した後、画像の読み込みを待たずに、ロードアニメーションを非表示にする
+	$(window).ready(function(){
+		$("#loading-wrap").delay(800).fadeOut(600);
+	})
+
+	setInterval(function(){
+		if($("#loading-wrap").css('display') =='none'){
+			$("#loading-wrap").attr('aria-busy','false');
+		}
+	},10);
+	///ロードアニメーション表示
+	function showLoading(){
+		$("#loading-wrap").show();
+	}
+	///ロードアニメーション非表示
+	function hideLoading(){
+		$("#loading-wrap").hide();
+	}
+	///ロードアニメーションフェードイン
+	function fadeInLoading(){
+		$("#loading-wrap").fadeIn();
+	}
+	///ロードアニメーションフェードアウト
+	function fadeOutLoading(){
+		$("#loading-wrap").fadeOut();
+	}
+</script>
+		<header class="page_header" id="page_header">
+    
+    
+    <h1 class="page_title" id="page_title">
+        <a href = "/" aria-label="本の総合カタログ Books 出版書誌データベース トップページへ移動する">
+            <img class="title_logo" src="/images/Logo.png" alt="本の総合カタログ Books 出版書誌データベース">
+            <div class="title_text">出版書誌データベース</div>
+        </a>
+    </h1>
+    <div class="header_link">
+        
+        <input type="hidden" id="search_type" value="">
+        
+        <button class = "searchaccessiblebooks_link"><div class = "text-offset15">アクセシブル<br>ブックを探すへ</div></button>
+        <button class = "searchbooks_link"><div class = "text-offset15">本を探すへ</div></button>
+        <button class = "returnsearch_link"><div class = "text-offset15">検索に戻る</div></button>
+        <button class = "calendar_link"><div class = "text-offset15">月間発売日<br>カレンダーへ</div></button>
+        <button class = "howto_link"><div class = "text-offset15">サイトの説明へ</div></button>
+
+        
+    </div>
+    <div class="header_notice">
+        出版物の二次利用等をお考えの方は<a href="/mikanri">こちら</a>もご確認ください
+    </div>
+</header>
+<form id = "header_searchforbooks_form" class = "header_searchforbooks_form" role = "search" method="post" action="/search-results">
+    <input type="hidden" name="_token" value="nVvIAq4FJnufIVZz0RFjOCaik7W88GJ61nbZWpSc">                        <input type="hidden" name="searchforbooks_title" value="">
+                    <input type="hidden" name="searchforbooks_author" value="">
+                    <input type="hidden" name="searchforbooks_keyword" value="">
+                    <input type="hidden" name="searchforbooks_publisher" value="">
+                    <input type="hidden" name="searchforbooks_afteryear" value="">
+                    <input type="hidden" name="searchforbooks_aftermonth" value="">
+                    <input type="hidden" name="searchforbooks_afterday" value="">
+                    <input type="hidden" name="searchforbooks_beforeyear" value="">
+                    <input type="hidden" name="searchforbooks_beforemonth" value="">
+                    <input type="hidden" name="searchforbooks_beforeday" value="">
+                    <input type="hidden" name="publication_date_order" value="">
+                    <input type="hidden" name="page" value="">
+                    <input type="hidden" name="searchforbooks_freeword" value="">
+                    <input type="hidden" name="publication_date" value="">
+                    <input type="hidden" name="hidden_active_category" value="">
+                    <input type="hidden" name="accessible_search_flag" value="">
+                    <input type="hidden" name="first_books_search_flag" value="">
+                    <input type="hidden" name="calendar_search_flag" value="">
+                                    <input type="hidden" name="publishtype1" value="">
+                    <input type="hidden" name="publishtype2" value="">
+                    <input type="hidden" name="publishtype4" value="">
+                    <input type="hidden" name="accessiblefunction1" value="">
+                    <input type="hidden" name="accessiblefunction2" value="">
+                    <input type="hidden" name="accessiblefunction3" value="">
+                    <input type="hidden" name="accessiblefunction4" value="">
+                    <input type="hidden" name="genre1" value="">
+                    <input type="hidden" name="genre2" value="">
+                    <input type="hidden" name="genre3" value="">
+                    <input type="hidden" name="genre4" value="">
+                    <input type="hidden" name="genre5" value="">
+                    <input type="hidden" name="genre6" value="">
+                    <input type="hidden" name="genre7" value="">
+                    <input type="hidden" name="genre8" value="">
+                    <input type="hidden" name="genre9" value="">
+                    <input type="hidden" name="genre10" value="">
+                    <input type="hidden" name="genre11" value="">
+                    <input type="hidden" name="genre12" value="">
+            </form>
+<script src="/js/header.js?date=20260914185903"></script>
+		
+		<!-- 各コンテンツはmainの中で反映される -->
+		<div id = "main">
+				<div class = "bookdetail_content">
+    <div class = "bookdetail_box">
+        <div class = "bookdetail_informationboxs">
+            <div class = "bookdetail_informationbox1">
+                
+                <div class = "bookdetail_author"></div>
+                <div class = "bookdetail_author"></div>
+                <h2 class ="bookdetail_title" >
+                    <span class = "bookdetail_title_text">
+                        五行大義校註☆〔増補版〕☆
+                        
+                        
+                        
+                                            </span>
+                </h2>
+
+                
+                <p class="bookdetail_author"></p>
+                <p class="bookdetail_author"></p>
+
+                
+                <div class = "bookdetail_publishtype">
+                    <span class = "green_box active " ><div class ="text-offset20">書籍</div></span>
+                    <span class = "green_box  "><div class ="text-offset20">オンデマンド版</div></span>
+                    <span class = "green_box  "><div class ="text-offset20">大活字版</div></span>
+                    
+                    
+                    <span class = "green_box  "><div class ="text-offset20">書籍</div></span>
+                    <span class = "orange_box  "><div class ="text-offset20">雑誌</div></span>
+                    <span class = "blue_box  "  ><div class ="text-offset20">電子版</div></span>
+                    <span class = "blue_box  "><div class ="text-offset20">読み上げ可能電子版</div></span>
+                    <span class = "purple_box  "><div class ="text-offset20">オーディオブック</div></span>
+                </div>
+
+                
+                                                            <div class = "bookdetail_author">著：中村　璋八</div>
+                                                                                                                            <div class = "bookdetail_publisher">出版社：汲古書院</div>
+            </div>
+
+            
+            
+                        <div class = "bookdetail_informationbox2">
+                                <div class = "main_image">
+                    <img src="/images/noimage_book.jpg" alt="メイン画像">
+                </div>
+                                
+                
+                
+                
+                
+                
+                <div class = "publisher_site margin-top">
+                    
+                                            <button id="publisher-top-btn" aria-label = "出版社のトップページを新規タブで開く" data-site-publisher="http://www.kyuko.asia/" ><span class = "text-offset20">出版社トップページ</span></button>
+                                    </div>
+                
+                
+                
+                <div class="publisher_site">
+                    <div class="attention-text">
+                        ※二次利用等に関するお問い合わせは<br>
+                        <span style="display: inline-block; margin-left: 1em;">出版社トップページへ</span>
+                    </div>
+                </div>
+
+                                
+            </div>
+
+            
+            <div class = "bookdetail_informationbox3 doitsu_box">
+                <div class ="anotherversion_title">同一作品の他版</div>
+                <div class ="anotherversion_buttons doitsu_buttons">
+                                                                
+                    
+                    
+                                    </div>
+            </div>
+            <div class = "bookdetail_informationbox3  accessible_box">
+                <div class ="anotherversion_title">アクセシブルブック</div>
+                <div class ="anotherversion_buttons accessible_buttons">
+                    <div class ="anotherversion_buttons_small">
+                        
+                        
+
+                        
+                                            </div>
+                    <div class ="anotherversion_buttons_big">
+                        <button id="supportvisual" aria-label = "この書誌の視覚障害者等資料へ移動する" class = "down_vector monochrome_box" style="display: none" onclick="supportvisual()"><span class = "text-offset15">この書誌の視覚障害者等資料</span></button>
+
+                                            </div>
+                </div>
+            </div>
+                        
+            
+            
+            <!-- 付属物、付録 -->
+                        
+            <div class ="accessiblebook-linklist" id = "accessiblebook-linklist">
+</div>
+<script>
+    let hasVisibleButton = false;
+    //アクセシブルブックのUIを生成するJS
+    $(window).on('load', function() {
+        //phpの$isbnがあるかないか？
+        if ("1" != "") {
+            //検索データが存在するかしないか？
+            if ("" != "" || "" != "" || "" != "") {
+                //h3のアクセシブルブックを表記
+                $(".accessiblebook-linklist").append('<h3 class="text-heading text-color"><strong>図書館等で借りられる視覚障害者等資料</strong>　<br class ="sp_br"><span class="small">(外部サイトに移動します)</span></h3>');
+                //サピエ図書館の検索結果を表示
+                if ("" != "") {
+                    $(".accessiblebook-linklist").append('<h4 >サピエ図書館</h4>');
+                    research_data_show();
+                    hasVisibleButton = true;
+                }
+                //NDL 視覚障害者等デジタル資料の検索結果を表示
+                if ("" != "") {
+                    $(".accessiblebook-linklist").append('<h4>NDL 視覚障害者等デジタル資料</h4>');
+                    research_data_show();
+                    hasVisibleButton = true;
+                }
+                //NDL 点字図書・録音図書全国総合目録の検索結果を表示
+                if ("" != "") {
+                    $(".accessiblebook-linklist").append('<h4>NDL 点字図書・録音図書全国総合目録</h4>');
+                    research_data_show();
+                    hasVisibleButton = true;
+                }
+                //jsonからhtmlコード生成関数(data=jsonデータ)
+                function research_data_show(data) {
+                    var listData = data;
+                    var inputList = "";
+                    for (var i = 0; i < listData.length; i++) {
+                        //aタグを生成
+                        if (listData[i]["link"] != "") {
+                            inputList += '<li><a href ="' + listData[i]["link"] + '" target="_blank">';
+                                // console.log('listData[i]["link"]');
+                                // console.log(listData[i]["link"]);
+                        } else {
+                            return;
+                        }
+                        //メディアタイプ１の表示を生成
+                        // if(listData[i]["mediatype1"] != ""){
+                        //     inputList +='<span class ="blue">'+listData[i]["mediatype1"].replace("録音図書（","").replace("）","")+'</span>';
+                        // }else{
+                        //     return ;
+                        // }
+                        //メディアタイプ２の表示を生成
+                        if (listData[i]["mediatype2"] != "") {
+                            inputList += '<span class ="box">' + listData[i]["mediatype2"].replace("録音図書（", "").replace("）", "") + '</span>';
+                        } else {
+                            return;
+                        }
+                        //デジタルパブリッシャーの表示を生成
+                        if (listData[i]["digitizedPublisher"] != "") {
+                            inputList += '<span class ="link"><span class = "unit">製作：</span><span class ="text">' + listData[i]["digitizedPublisher"] + '</span></span></a></li>';
+                        }
+                    }
+                    //生成した表示データをリストとして挿入
+                    $(".accessiblebook-linklist").append('<ul>' + inputList + '</ul>');
+                    //表示したデータのaria-labelを整える
+                    $(".accessiblebook-linklist ul li a").each(function() {
+                        $(this).attr('aria-label', $(this).text() + "のサイトを新規タブで開く");
+                    })
+                }
+            } else {
+                $('#supportvisual').remove();
+                // アクセシブルブック内のdiv要素(anotherversion_buttons_small, anotherversion_buttons_big)について、どのボタンも無ければ非表示
+                $('.accessible_buttons > div').each(function() {
+                    if($(this).children('button').length == 0) {
+                        $(this).hide();
+                    }
+                })
+            }
+        }
+        if (hasVisibleButton) {
+            // 「この書誌の視覚障害者等資料へ移動する」ボタンを表示
+            $('#supportvisual').show();
+        }
+        // すべてのdiv要素が非表示になったかどうかをチェックし、accessible_box全体を非表示にする
+        if ($('.accessible_buttons > div:visible').length == 0) {
+            $('.accessible_box').hide();
+        }
+    });
+//アクセシブルブックのUIを生成するJS
+</script>
+            <div class = "bookdetail_informationbox5">
+                <div class = "otherdata">
+                                                                <p class="text-body text-color">ISBN：9784762922176<br>出版社：汲古書院<br>判型：A5<br>ページ数：402ページ<br>定価：9000円（本体）<br>発行年月日：1998年05月<span class='readonly'>。</span></p>
+                                    </div>
+            </div>
+
+            
+            
+            <div class = "snslinker">
+                <button class = "X-share" aria-label = "Xへシェアする" onclick="location.href='https://twitter.com/share?url=https%3A%2F%2Fwww.books.or.jp%2Fbook-details%2F9784762922176&text=%E4%BA%94%E8%A1%8C%E5%A4%A7%E7%BE%A9%E6%A0%A1%E8%A8%BB%E2%98%86%E3%80%94%E5%A2%97%E8%A3%9C%E7%89%88%E3%80%95%E2%98%86%EF%BD%9C%E6%B1%B2%E5%8F%A4%E6%9B%B8%E9%99%A2'"><img src = "/images/sns/x-icon.webp" alt = "エックスのアイコン"><div class ="readonly">エックスへシェアする</div></button>
+                <button class = "facebook-share" aria-label = "facebookへシェアする" onclick="location.href='http://www.facebook.com/sharer.php?u=https%3A%2F%2Fwww.books.or.jp%2Fbook-details%2F9784762922176&t=%E4%BA%94%E8%A1%8C%E5%A4%A7%E7%BE%A9%E6%A0%A1%E8%A8%BB%E2%98%86%E3%80%94%E5%A2%97%E8%A3%9C%E7%89%88%E3%80%95%E2%98%86%EF%BD%9C%E6%B1%B2%E5%8F%A4%E6%9B%B8%E9%99%A2'"><img src = "/images/sns/facebook-icon.webp" alt = "フェイスブックのアイコン"><div class ="readonly">フェイスブックへシェアする</div></button>
+                <button class = "bookmark-share" aria-label = "はてなブックマークへシェアする" onclick="location.href='http://b.hatena.ne.jp/entry/https%3A%2F%2Fwww.books.or.jp%2Fbook-details%2F9784762922176'"><img src = "/images/sns/bookmark-icon.webp" alt = "はてなブックマークのアイコン"><div class ="readonly">はてなブックマークへシェアする</div></button>
+                <button class = "line-share" aria-label = "ラインへシェアする" onclick="location.href='http://line.me/R/msg/text/?%E4%BA%94%E8%A1%8C%E5%A4%A7%E7%BE%A9%E6%A0%A1%E8%A8%BB%E2%98%86%E3%80%94%E5%A2%97%E8%A3%9C%E7%89%88%E3%80%95%E2%98%86%EF%BD%9C%E6%B1%B2%E5%8F%A4%E6%9B%B8%E9%99%A2 https%3A%2F%2Fwww.books.or.jp%2Fbook-details%2F9784762922176'"><img src = "/images/sns/line-icon.webp" alt = "ラインのアイコン"><div class ="readonly">ラインへシェアする</div></button>
+            </div>
+        </div>
+        <div class = "storelinker">
+                            <div class = "storelinker_text">ご購入はこちら</div>
+                                <div class = "storelinker_buttons">
+                    <!-- 書店案内(バナーエリアは、紙書籍、オンデマンド版で、表示する。また、全国書店案内以外は、JPRO付番コードが「< 20000」の条件を満たした場合に表示する。) -->
+
+                        <button class ="hmv_books" aria-label = "HMV&Booksの購入サイトを新規タブで開く" onclick="javascript:window.open('http://click.linksynergy.com/fs-bin/click?id=iXJTuP6TCmg&amp;subid=&amp;offerid=131139.1&amp;type=10&amp;tmpid=1161&amp;RD_PARM1=http%253A%252F%252Fwww.hmv.co.jp%252Fsearch%252Fsearchresults.asp%253Fisbn%253D9784762922176%2526site%253Dbooksorjp', '_blank')"><img src ="/images/stores/hmv_books.webp" alt = "HMVブックスのアイコン"><div class ="readonly">HMV&Booksの購入サイトを開く</div></button>
+                        <button class ="kinokuniya" aria-label = "紀伊国屋書店の購入サイトを新規タブで開く" onclick="javascript:window.open('http://ck.jp.ap.valuecommerce.com/servlet/referral?sid=2088108&pid=874918578&vc_url=http%3a%2f%2fbookweb.kinokuniya.co.jp%2fguest%2fcgi-bin%2fwshosea.cgi%3fW-ISBN%3d9784762922176', '_blank')"><img src ="/images/stores/kinokuniya.webp" alt = "紀伊国屋書店のアイコン"><div class ="readonly">紀伊国屋書店の購入サイトを開く</div></button>
+                        <button class ="honya_club" aria-label = "本屋クラブの購入サイトを新規タブで開く" onclick="javascript:window.open('https://www.honyaclub.com/shop/affiliate/itemlist.aspx?isbn=9784762922176', '_blank')"><img src ="/images/stores/honya_club.webp" alt = "本屋クラブのアイコン"><div class ="readonly">本屋クラブの購入サイトを開く</div></button>
+                        <button class ="maruzen_junkudo" aria-label = "丸善ジュンク堂の購入サイトを新規タブで開く" onclick="javascript:window.open('https://www.maruzenjunkudo.co.jp/products/9784762922176', '_blank')"><img src ="/images/stores/maruzen_junkudo.webp" alt = "丸善　ジュンク堂のアイコン"><div class ="readonly">丸善　ジュンク堂の購入サイトを開く</div></button>
+                        
+                        <button class ="seven_net" aria-label = "セブンネットの購入サイトを新規タブで開く" onclick="javascript:window.open('http://ck.jp.ap.valuecommerce.com/servlet/referral?sid=2088108&pid=881672236&vc_url=http%3a%2f%2f7net.omni7.jp%2fdetail_isbn%2f9784762922176', '_blank')"><img src ="/images/stores/7net.webp" alt = "セブンネットのアイコン"><div class ="readonly">セブンネットの購入サイトを開く</div></button>
+                        <button class ="e_hon" aria-label = "イーホンの購入サイトを新規タブで開く" onclick="javascript:window.open('https://www.e-hon.ne.jp/bec/SA/Detail?refBook=9784762922176', '_blank')"><img src ="/images/stores/e_hon.webp" alt = "イーホンのアイコン"><div class ="readonly">イーホンの購入サイトを開く</div></button>
+                        <button class ="rakuten_books" aria-label = "楽天ブックスの購入サイトを新規タブで開く" onclick="javascript:window.open('http://pt.afl.rakuten.co.jp/c/08d9c291.1ddb406b/?url=http://books.rakuten.co.jp/rdt/item/?sid=213310%26sno=ISBN%3A9784762922176', '_blank')"><img src ="/images/stores/rakuten_books.webp" alt = "楽天ブックスのアイコン"><div class ="readonly">楽天ブックスの購入サイトを開く</div></button>
+                        <button class ="amazon" aria-label = "amazonの購入サイトを新規タブで開く" onclick="javascript:window.open('http://www.amazon.co.jp/s/?tag=books029-22&url=search-alias%3Daps&field-keywords=9784762922176', '_blank')"><img src ="/images/stores/amazon.webp" alt = "アマゾンのアイコン"><div class ="readonly">アマゾンの購入サイトを開く</div></button>
+                        
+                        
+                        <!-- ISBNなしは除く -->
+                                                    <button class ="openbs" aria-label = "近くの書店の在庫を探すを新規タブで開く" onclick="javascript:window.open('https://demo.openbs.jp/9784762922176', '_blank')">近くの書店の<br>在庫を探す</button>
+                            <button class ="country_bookstores" aria-label = "全国書店案内の購入サイトを新規タブで開く" onclick="javascript:window.open('http://seinenbu.tokyo-shoten.or.jp/kumiaimap_utf8.htm?bkey=9784762922176', '_blank')">全国書店案内<br>こちら>></button>
+                                        </div>
+                                        </div>
+        </div>
+    </div>
+</div>
+<form id="other_versions" class="other_versions" method="post" action="/search-results">
+    <input type="hidden" name="_token" value="nVvIAq4FJnufIVZz0RFjOCaik7W88GJ61nbZWpSc">    
+    <input hidden id="different_editions_title" name="different_editions_title" value="五行大義校註☆〔増補版〕☆">
+    
+    <input hidden id="different_editions_diff_button" name="different_editions_diff_button">
+    <input hidden id="different_editions_diff_product_ids" name="different_editions_diff_product_ids">
+    
+    <input hidden id="different_editions_ebook_button" name="different_editions_ebook_button">
+    <input hidden id="different_editions_ebook_product_ids" name="different_editions_ebook_product_ids">
+    
+    <input hidden id="different_editions_ondemand_button" name="different_editions_ondemand_button">
+    <input hidden id="different_editions_ondemand_product_ids" name="different_editions_ondemand_product_ids">
+    
+    <input hidden id="different_editions_audio_button" name="different_editions_audio_button">
+    <input hidden id="different_editions_audio_product_ids" name="different_editions_audio_product_ids">
+    
+    <input hidden id="different_editions_daikatsuji_button" name="different_editions_daikatsuji_button">
+    <input hidden id="different_editions_daikatsuji_product_ids" name="different_editions_daikatsuji_product_ids">
+    
+    <input hidden id="different_editions_yomiagekanouebook_button" name="different_editions_yomiagekanouebook_button">
+    <input hidden id="different_editions_yomiagekanouebook_product_ids" name="different_editions_yomiagekanouebook_product_ids">
+    
+    <input hidden id="different_editions_shikaku_button" name="different_editions_shikaku_button">
+    <input hidden id="different_editions_shikaku_product_ids" name="different_editions_shikaku_product_ids">
+</form>
+<script src = "/js/detail.js?date=20260914185903"></script>
+		</div>
+
+		<!-- 共通制御 -->
+		<script src="/js/books_commons.js?date=20260914185903"></script>
+		<script src="/js/site-env.js?date=20260914185903"></script>
+        
+		<!-- フッター -->
+		<footer class = "page_footer" >
+    <div class = "footer_box">
+        <div class="footer_main_row">
+            <div class = "footer_link">
+                <h2><a href ="/how-to-use" aria-label="サイトの説明のページを開く">サイトの説明</a></h2>
+                <h2><a href ="/books-terms" aria-label="利用規約のページを開く">利用規約</a></h2>
+                <h2><a href ="/privacy-policy" aria-label="プライバシーポリシーのページを開く">プライバシーポリシー</a></h2>
+                <h2><a href ="/contact" aria-label="お問い合わせのページを開く">お問い合わせ</a></h2>
+            </div>
+            <div class = "copyright">この検索サイトは日本語のみ対応しています。　<br>©2019 一般社団法人 日本出版インフラセンター <br class = "sp_br">Japan Publishing Organization For <br class = "sp_br">Information Infrastructure Development</div>
+        </div>
+        <div class = "publisher_industry">このサイトは、国内の3000社超の出版社と、<br class = "sp_br">日本書籍出版協会・日本雑誌協会・デジタル出版者連盟・<br class = "sp_br">日本出版者協議会・版元ドットコムなど<br class = "sp_br">多くの出版団体の協力で運営されています。</div>
+    </div>
+    <div class ="return_section" style="position: fixed">
+        <div class ="return_box">
+            <button class = "return_link" aria-label = "ページのTOPへ戻る">ページ<span class = "readonly">の</span>TOPへ</button>
+        </div>
+    </div>
+</footer>
+<script src = "/js/footer.js?date=20260914185903"></script>
+	</body>
+</html>

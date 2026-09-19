@@ -1,0 +1,7 @@
+export interface SourceReference { source_id: string; title: string; edition?: string; chapter?: string; page?: string; url?: string }
+export interface ApiError { code: string; message: string; details?: Record<string, unknown> }
+export interface ApiEnvelope<T> { result: T | null; system: string; source_refs: SourceReference[]; session_id: string | null; warnings: string[]; error: ApiError | null; meta: { mock: boolean; version: string; generated_at: string } }
+export function success<T>(result:T,options:{system:string;sessionId?:string|null;sources?:SourceReference[];warnings?:string[];mock?:boolean}):ApiEnvelope<T>{return{result,system:options.system,source_refs:options.sources??[],session_id:options.sessionId??null,warnings:options.warnings??[],error:null,meta:{mock:options.mock??false,version:"1.0.0",generated_at:new Date().toISOString()}}}
+export function failure(system:string,code:string,message:string,details?:Record<string,unknown>,status=400){return Response.json({result:null,system,source_refs:[],session_id:null,warnings:[],error:{code,message,details},meta:{mock:false,version:"1.0.0",generated_at:new Date().toISOString()}},{status})}
+export function text(value:unknown,max=300){return typeof value==="string"?value.trim().slice(0,max):""}
+export function record(value:unknown):Record<string,unknown>|null{return typeof value==="object"&&value!==null&&!Array.isArray(value)?value as Record<string,unknown>:null}
