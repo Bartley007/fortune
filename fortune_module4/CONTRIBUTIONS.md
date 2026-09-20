@@ -18,6 +18,7 @@ Module 4 是面向传统术数项目的个性化与私人知识库后端。它�
 - 用户数据 JSON 导出。
 - 隐私设置、匿名案例授权和用户数据删除。
 - 使用 `source_id` 保存公共知识来源引用。
+- 对缺少 `source_id` 的旧数据集，从规范化 URL 生成稳定性一致的来源 ID。
 - 所有私有查询严格按 `user_id` 隔离。
 
 ## 跨模块契约
@@ -43,6 +44,16 @@ Module 4 是面向传统术数项目的个性化与私人知识库后端。它�
 - LLM 仅生成推荐解释和相似案例解释。
 - LLM 不允许修改图表、卦象、签号、原文、确定性命中数据、分数或排序结果。
 
+## 跨平台部署
+
+- Windows 原生：`setup_windows.bat`、`test_windows.bat`、`start_windows.bat`。
+- Linux 原生：`setup_linux.sh`、`test_linux.sh`、`start_linux.sh`。
+- Linux CUDA/ML：`setup_linux_gpu.sh`。
+- macOS 远程 Qwen：`scripts/setup_mac_qwen.sh`。
+- Windows 到 Mac 隧道：`start_remote_mac_qwen_windows.bat`。
+- Linux/macOS 到 Mac 隧道：`start_remote_mac_qwen_tunnel.sh`。
+- 模式说明：`docs/deployment_modes.md`。
+- 版本升级到 `0.2.0`，详细变更见 `CHANGELOG.md`。
 ## 存储与运行
 
 - 默认本地 SQLite，可无 GPU 启动。
@@ -56,7 +67,7 @@ Module 4 是面向传统术数项目的个性化与私人知识库后端。它�
 
 - Ruff 通过。
 - mypy 严格模式通过。
-- 15 个 pytest 测试通过。
+- 24 个 pytest 测试通过。
 - 开发依赖和 ML 依赖两种安装方式均通过。
 - 提供 `verify_end_to_end_windows.bat` 实时全流程验证：
   - 健康检查
