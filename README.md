@@ -25,25 +25,33 @@
 git clone <repository-url>
 cd fortune-system
 npm install
-cp .env.example .env.local
-npm run dev
+npm run dev:all
 ```
 
-浏览器打开 [http://localhost:3000](http://localhost:3000)。如果端口被占用，Next.js 会在终端显示实际端口。
+浏览器打开 [http://localhost:3000](http://localhost:3000)。`dev:all` 会同时启动三个 Python
+后端、使用独立端口，并把持久数据写入 Codex 数据目录，避免按模块分别启动时的端口冲突。
 
-Python 算法服务尚未启动时可以保持 `.env.local` 中对应变量为空；系统会使用带有 Mock 标记的兼容结果。如果已经运行 Python/FastAPI 服务，配置：
+默认端口和地址：
 
 ```env
-PYTHON_ALGORITHM_BASE_URL=http://127.0.0.1:8000
+PYTHON_BAZI_BASE_URL=http://127.0.0.1:8001
+PYTHON_DIVINATION_BASE_URL=http://127.0.0.1:8002
+NEXT_PUBLIC_MODULE4_API_BASE_URL=http://127.0.0.1:8003
 ```
 
-项目内置的六爻服务可这样启动：
+`PYTHON_ALGORITHM_BASE_URL` 仅作为兼容回退，用于同时暴露
+`/bazi/chart` 和 `/divination/cast` 的单一组合服务。
+
+数据目录默认是 `~/Documents/Codex/fortune-data`，可通过 `FORTUNE_DATA_DIR` 修改；
+Python 运行环境放在项目自己的 `.runtime/` 目录。初次运行会创建隔离环境，因此第一次启动会比后续慢。
+
+如需分别启动六爻服务：
 
 ```bash
 cd python_algorithm
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/uvicorn app:app --reload --port 8000
+.venv/bin/uvicorn app:app --reload --port 8002
 ```
 
 具体请求和返回结构见 [Python 算法接入说明](docs/API_INTEGRATION.md)。
@@ -56,6 +64,8 @@ npm test           # 运行测试
 npm run lint       # 运行 ESLint
 npm run typecheck  # 运行 TypeScript 检查
 npm run check      # 依次执行测试、Lint 和类型检查
+npm run verify:stack # 对已启动的整套服务做 HTTP 契约验收
+npm run verify     # 执行 check 和生产构建
 npm run build      # 生产构建
 npm start          # 启动生产构建
 ```

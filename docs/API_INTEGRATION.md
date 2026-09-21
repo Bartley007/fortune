@@ -4,11 +4,17 @@ The Next.js application owns browser-facing API validation and response envelope
 
 ## Configure the Python service
 
-Set the environment variable before starting Next.js:
+Set the service-specific environment variables before starting Next.js:
 
 ```bash
-PYTHON_ALGORITHM_BASE_URL=http://127.0.0.1:8000
+PYTHON_BAZI_BASE_URL=http://127.0.0.1:8001
+PYTHON_DIVINATION_BASE_URL=http://127.0.0.1:8002
 ```
+
+The repository starts these services on separate ports because the two
+Python applications expose different namespaces and otherwise conflict on
+`8000`. `PYTHON_ALGORITHM_BASE_URL` remains an optional fallback for a single
+combined service.
 
 When the variable is absent, Bazi and divination endpoints return explicit mock data with `meta.mock: true` and a warning. The frontend requires no changes when the Python service is connected.
 

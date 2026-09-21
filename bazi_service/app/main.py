@@ -3,11 +3,11 @@
 Next.js owns browser-facing validation and response envelopes; this service
 owns the calculation. Run with:
 
-    uvicorn app.main:app --reload --port 8000
+    uvicorn app.main:app --reload --port 8001
 
 Then point Next.js at it:
 
-    PYTHON_ALGORITHM_BASE_URL=http://127.0.0.1:8000
+    PYTHON_BAZI_BASE_URL=http://127.0.0.1:8001
 """
 
 from fastapi import FastAPI
