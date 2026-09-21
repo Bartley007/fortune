@@ -7,7 +7,7 @@
 ## 当前状态
 
 - 观音百签：完整结构化签库与服务端安全随机抽签。
-- 知识检索：已接入 363 条结构化知识页面。
+- 知识检索：已接入 764 条结构化知识页面。
 - 八字排盘：前端和 API 契约完成；未配置 Python 服务时返回明确标记的 Mock 数据。
 - 易卦推演：前端和 API 契约完成；未配置 Python 服务时返回明确标记的 Mock 数据。
 - 知识图谱：接口与展示骨架完成，实体关系数据待入库。
@@ -35,6 +35,15 @@ Python 算法服务尚未启动时可以保持 `.env.local` 中对应变量为�
 
 ```env
 PYTHON_ALGORITHM_BASE_URL=http://127.0.0.1:8000
+```
+
+项目内置的六爻服务可这样启动：
+
+```bash
+cd python_algorithm
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/uvicorn app:app --reload --port 8000
 ```
 
 具体请求和返回结构见 [Python 算法接入说明](docs/API_INTEGRATION.md)。
@@ -83,6 +92,7 @@ tests/              自动化测试
 | --- | --- | --- |
 | POST | `/api/bazi/chart` | 契约完成，等待 Python 算法 |
 | POST | `/api/divination/cast` | 契约完成，等待 Python 算法 |
+| POST | `/api/divination/chat` | 可用；追问必要信息并调度起卦或抽签 |
 | POST | `/api/guanyin-lot/draw` | 可用 |
 | GET | `/api/knowledge/search?q=` | 可用 |
 | GET | `/api/knowledge/graph?concept=` | Mock 图谱 |
