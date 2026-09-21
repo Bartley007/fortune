@@ -492,7 +492,7 @@ export default function BaziWorkspace() {
         {step === 2 && chart && (
           <>
             <h2>四柱排盘</h2>
-            <p className="kicker">{isMock ? "模拟命盘 · 计算引擎待接入" : "规则引擎计算结果"}</p>
+            <p className="kicker">{isMock ? "模拟命盘" : "规则引擎计算结果"}</p>
             {warnings.map((warning) => (
               <p className="notice" key={warning}>
                 {warning}

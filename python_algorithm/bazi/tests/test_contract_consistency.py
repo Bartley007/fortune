@@ -9,7 +9,7 @@ TypeScript union doesn't have, both sides pass their own checks and the
 frontend silently renders `undefined` when that value first appears. These
 tests are the only thing standing between that and production.
 
-Run from bazi_service/; skipped automatically if the frontend isn't alongside
+Run from python_algorithm/; skipped automatically if the frontend isn't alongside
 (e.g. when the service is checked out on its own).
 """
 
@@ -20,7 +20,7 @@ from pathlib import Path
 
 import pytest
 
-from app.models.enums import (
+from bazi.models.enums import (
     DISPLAY_BRANCH,
     DISPLAY_ELEMENT,
     DISPLAY_PATTERN,
@@ -35,7 +35,8 @@ from app.models.enums import (
     TenGod,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+# python_algorithm/bazi/tests/<this file> → four levels up is the repo root.
+REPO_ROOT = Path(__file__).resolve().parents[3]
 CONTRACT_TS = REPO_ROOT / "lib" / "contracts" / "bazi.ts"
 DISPLAY_TS = REPO_ROOT / "lib" / "bazi" / "display.ts"
 

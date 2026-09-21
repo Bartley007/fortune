@@ -6,8 +6,8 @@ per docs/API_INTEGRATION.md.
 
 from fastapi import APIRouter
 
-from ..mocks.chart import build_mock_chart
-from ..models.bazi import BaziChartRequest, BaziChartResult
+from bazi.mocks.chart import build_mock_chart
+from bazi.models.bazi import BaziChartRequest, BaziChartResult
 
 router = APIRouter(prefix="/bazi", tags=["bazi"])
 
