@@ -54,7 +54,7 @@ Every browser-facing response follows `ApiEnvelope<T>` in `lib/contracts/api.ts`
 
 ## Divination chatbot
 
-`POST /api/divination/chat` accepts a short conversation and returns either one necessary follow-up question or a ready-to-run request. It is deliberately a rule-based conversation coordinator: it does not calculate hexagrams, choose a lot number, rewrite a poem, or produce an authoritative interpretation.
+`POST /api/divination/chat` accepts a short conversation and returns either one necessary follow-up question or a ready-to-run divination request. It is deliberately a rule-based conversation coordinator: it does not calculate hexagrams, rewrite source text, or produce an authoritative interpretation. Guanyin lots are handled only by the separate `/guanyin` module.
 
 ```json
 {
@@ -64,4 +64,4 @@ Every browser-facing response follows `ApiEnvelope<T>` in `lib/contracts/api.ts`
 }
 ```
 
-If required information is still missing, the response has `result.status: "clarify"` and a short `message`. When ready, it returns either `result.cast_request` for `/api/divination/cast` or `result.guanyin_request` for `/api/guanyin-lot/draw`.
+If required information is still missing, the response has `result.status: "clarify"` and a short `message`. When ready, it returns `result.cast_request` for `/api/divination/cast`. Requests for lots receive guidance to use the separate Guanyin-lot module instead.

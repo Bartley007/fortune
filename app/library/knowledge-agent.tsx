@@ -192,27 +192,30 @@ export default function KnowledgeAgent({
   );
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(`module4-agent-${userId}`);
-    if (stored) {
-      try {
-        setMessages(JSON.parse(stored) as AgentMessage[]);
-        return;
-      } catch {
-        window.localStorage.removeItem(`module4-agent-${userId}`);
+    const timer = window.setTimeout(() => {
+      const stored = window.localStorage.getItem(`module4-agent-${userId}`);
+      if (stored) {
+        try {
+          setMessages(JSON.parse(stored) as AgentMessage[]);
+          return;
+        } catch {
+          window.localStorage.removeItem(`module4-agent-${userId}`);
+        }
       }
-    }
 
-    setMessages([
-      {
-        id: createMessageId("agent"),
-        role: "agent",
-        content: [
-          "我是你的个人知识库智能体。",
-          "你可以直接询问收藏内容、典籍来源、个人笔记或标签。我会先检索你的私有资料，再给出带来源标识的回答。",
-        ].join("\n"),
-        sources: [],
-      },
-    ]);
+      setMessages([
+        {
+          id: createMessageId("agent"),
+          role: "agent",
+          content: [
+            "我是你的个人知识库智能体。",
+            "你可以直接询问收藏内容、典籍来源、个人笔记或标签。我会先检索你的私有资料，再给出带来源标识的回答。",
+          ].join("\n"),
+          sources: [],
+        },
+      ]);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [userId]);
 
   useEffect(() => {

@@ -1,1 +1,28 @@
-import type {Metadata} from "next";import PageHeading from "../components/page-heading";import DivinationChatbot from "./divination-chatbot";import DivinationForm from "./divination-form";export const metadata:Metadata={title:"智能占卜"};export default function Page(){return <main className="subpage"><PageHeading eyebrow="易卦推演" title="一问一卦，察其变化" description="明确问题与时间范围，再以数字起卦。卦象由确定性规则生成，解释与古籍依据分层呈现。"/><div className="page-shell workspace"><aside className="side-steps"><span className="active">01　明确所问</span><span>02　选择起卦</span><span>03　查看卦变</span><span>04　阅读依据</span></aside><div className="divination-tools"><DivinationChatbot/><DivinationForm/></div></div></main>}
+import type { Metadata } from "next";
+import PageHeading from "../components/page-heading";
+import DivinationChatbot from "./divination-chatbot";
+
+export const metadata: Metadata = { title: "智能占卜" };
+
+export default function Page() {
+  return (
+    <main className="subpage">
+      <PageHeading
+        eyebrow="易卦推演"
+        title="一问一卦，察其变化"
+        description="通过对话说明问题、时间范围和起卦数字。卦象由确定性规则生成，解释与古籍依据分层呈现。"
+      />
+      <div className="page-shell workspace">
+        <aside className="side-steps">
+          <span className="active">01　明确所问</span>
+          <span>02　补充起卦数字</span>
+          <span>03　查看卦变</span>
+          <span>04　阅读依据</span>
+        </aside>
+        <div className="divination-tools">
+          <DivinationChatbot />
+        </div>
+      </div>
+    </main>
+  );
+}

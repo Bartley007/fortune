@@ -159,6 +159,40 @@ function DmsField({
   );
 }
 
+function StepNav({
+  step,
+  unlocked,
+  onNavigate,
+  onReset,
+}: {
+  step: number;
+  unlocked: boolean;
+  onNavigate: (target: number) => void;
+  onReset: () => void;
+}) {
+  const onLastStep = step === STEPS.length;
+
+  return (
+    <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
+      {step > 1 && (
+        <button className="button" type="button" onClick={() => onNavigate(step - 1)}>
+          上一步
+        </button>
+      )}
+      {step < STEPS.length && unlocked && (
+        <button className="button button-primary" type="button" onClick={() => onNavigate(step + 1)}>
+          下一步
+        </button>
+      )}
+      {onLastStep && (
+        <button className="button button-primary" type="button" onClick={onReset}>
+          重新排盘
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function BaziWorkspace() {
   const [step, setStep] = useState(1);
 
@@ -284,31 +318,6 @@ export default function BaziWorkspace() {
   function goto(target: number) {
     if (target !== 1 && !unlocked) return;
     setStep(target);
-  }
-
-  /** Shown at the foot of every step so the sidebar isn't the only way through. */
-  function Nav() {
-    const onLastStep = step === STEPS.length;
-    return (
-      <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
-        {step > 1 && (
-          <button className="button" type="button" onClick={() => goto(step - 1)}>
-            上一步
-          </button>
-        )}
-        {step < STEPS.length && unlocked && (
-          <button className="button button-primary" type="button" onClick={() => goto(step + 1)}>
-            下一步
-          </button>
-        )}
-        {/* Nothing follows the last step, so offer the way back to the start. */}
-        {onLastStep && (
-          <button className="button button-primary" type="button" onClick={() => setStep(1)}>
-            重新排盘
-          </button>
-        )}
-      </div>
-    );
   }
 
   return (
@@ -546,7 +555,7 @@ export default function BaziWorkspace() {
               </p>
             </details>
 
-            <Nav />
+            <StepNav step={step} unlocked={unlocked} onNavigate={goto} onReset={() => setStep(1)} />
           </>
         )}
 
@@ -628,7 +637,7 @@ export default function BaziWorkspace() {
               </p>
             </details>
 
-            <Nav />
+            <StepNav step={step} unlocked={unlocked} onNavigate={goto} onReset={() => setStep(1)} />
           </>
         )}
 
@@ -667,7 +676,7 @@ export default function BaziWorkspace() {
               {BRANCH_LABEL[chart.current_period.day.branch]} 日
             </p>
 
-            <Nav />
+            <StepNav step={step} unlocked={unlocked} onNavigate={goto} onReset={() => setStep(1)} />
           </>
         )}
 
@@ -726,7 +735,7 @@ export default function BaziWorkspace() {
               </p>
             )}
 
-            <Nav />
+            <StepNav step={step} unlocked={unlocked} onNavigate={goto} onReset={() => setStep(1)} />
           </>
         )}
       </section>

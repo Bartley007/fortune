@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 import KnowledgeAgent from "./knowledge-agent";
 import { Module4ApiError, module4Api } from "@/lib/module4/api";
@@ -108,11 +109,14 @@ export default function LibraryWorkspace() {
   const [tagName, setTagName] = useState("");
 
   useEffect(() => {
-    const saved = window.localStorage.getItem("module4-user-id");
-    if (saved?.trim()) {
-      setActiveUser(saved.trim());
-      setIdentityDraft(saved.trim());
-    }
+    const timer = window.setTimeout(() => {
+      const saved = window.localStorage.getItem("module4-user-id")?.trim();
+      if (saved) {
+        setActiveUser(saved);
+        setIdentityDraft(saved);
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -354,7 +358,7 @@ export default function LibraryWorkspace() {
       <section className="page-hero">
         <div className="page-shell">
           <p className="crumb">
-            <a href="/">首页</a> ／ 个人知识库
+            <Link href="/">首页</Link> ／ 个人知识库
           </p>
           <p className="kicker">PERSONAL KNOWLEDGE BASE</p>
           <h1 className="page-title">与你的知识库对话</h1>
