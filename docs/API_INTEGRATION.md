@@ -34,12 +34,15 @@ Request:
 
 Return the `DivinationCastResult` shape defined in `lib/contracts/divination.ts`. Line values use the traditional numeric representation: `6`, `7`, `8`, or `9`.
 
+The reference implementation is in `python_algorithm/`. Its rules are: arrays are ordered from the bottom line to the top line; in number casting, the first and second positive integers select the upper and lower trigrams using modulo 8, and the optional third integer selects the moving line (otherwise their sum selects it). The mutual hexagram uses lines 2–4 and 3–5; values `6` and `9` change yin/yang to form the transformed hexagram.
+
 ## Browser-facing routes
 
 | Method | Route | Implementation entry |
 | --- | --- | --- |
 | POST | `/api/bazi/chart` | `lib/bazi/service.ts` |
 | POST | `/api/divination/cast` | `lib/divination/service.ts` |
+| POST | `/api/divination/chat` | rule-based clarification and dispatch route |
 | POST | `/api/guanyin-lot/draw` | `lib/guanyin/library.ts` |
 | GET | `/api/knowledge/search?q=` | `lib/knowledge/library.ts` |
 | GET | `/api/knowledge/graph?concept=` | graph placeholder route |
@@ -48,3 +51,17 @@ Return the `DivinationCastResult` shape defined in `lib/contracts/divination.ts`
 | POST | `/api/user/notes` | `lib/session/store.ts` |
 
 Every browser-facing response follows `ApiEnvelope<T>` in `lib/contracts/api.ts`. Session events and notes currently use process memory and must be replaced with persistent storage before production deployment.
+
+## Divination chatbot
+
+`POST /api/divination/chat` accepts a short conversation and returns either one necessary follow-up question or a ready-to-run request. It is deliberately a rule-based conversation coordinator: it does not calculate hexagrams, choose a lot number, rewrite a poem, or produce an authoritative interpretation.
+
+```json
+{
+  "messages": [
+    {"role": "user", "content": "我想用六爻问未来三个月的工作，数字 18 和 27"}
+  ]
+}
+```
+
+If required information is still missing, the response has `result.status: "clarify"` and a short `message`. When ready, it returns either `result.cast_request` for `/api/divination/cast` or `result.guanyin_request` for `/api/guanyin-lot/draw`.

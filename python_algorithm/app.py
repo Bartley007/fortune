@@ -1,0 +1,20 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+
+from hexagram_engine import calculate
+
+app = FastAPI(title="Fortune deterministic algorithm service")
+
+class DivinationRequest(BaseModel):
+    question: str = Field(min_length=1, max_length=300)
+    method: str
+    numbers: list[int] | None = None
+    coins: list[list[int]] | None = None
+    time_range: str | None = Field(default=None, max_length=80)
+
+@app.post("/divination/cast")
+def cast_divination(request: DivinationRequest):
+    try:
+        return calculate(request.method, request.numbers, request.coins)
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
