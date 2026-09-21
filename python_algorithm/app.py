@@ -18,3 +18,11 @@ def cast_divination(request: DivinationRequest):
         return calculate(request.method, request.numbers, request.coins)
     except ValueError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
+
+
+# --- BaZi module (bazi/) -----------------------------------------------------
+# Mounted here so both modules share one service, one port and the single
+# PYTHON_ALGORITHM_BASE_URL. Everything BaZi-specific lives under bazi/.
+from bazi.routers.bazi import router as bazi_router  # noqa: E402
+
+app.include_router(bazi_router)

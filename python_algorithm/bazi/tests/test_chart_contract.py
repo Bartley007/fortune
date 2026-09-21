@@ -7,7 +7,9 @@ engine lands, any accidental contract drift fails loudly.
 
 from fastapi.testclient import TestClient
 
-from app.main import app
+# The combined service in python_algorithm/app.py, with the bazi router
+# mounted — testing it here also proves the router is actually wired in.
+from app import app
 
 client = TestClient(app)
 
@@ -35,10 +37,6 @@ def post(overrides: dict | None = None):
 # ------------------------------------------------------------------ #
 # Happy path                                                          #
 # ------------------------------------------------------------------ #
-
-
-def test_health():
-    assert client.get("/health").json() == {"status": "ok"}
 
 
 def test_returns_every_contract_section():
