@@ -1,0 +1,360 @@
+/*
+ * BaZi chart views (steps 02 and 03). Page-level tokens (--line, --muted,
+ * --jade, --red, --white) come from app/globals.css; only element colours are
+ * defined here. All motion is CSS — no animation library — and honours
+ * prefers-reduced-motion.
+ */
+
+/* ---- element colours ---------------------------------------------------- */
+
+.el[data-element="wood"] { --el: #2f6b40; --el-tint: #e7efe8; }
+.el[data-element="fire"] { --el: #a8352a; --el-tint: #f5e6e2; }
+.el[data-element="earth"] { --el: #7d5f33; --el-tint: #efe8dd; }
+.el[data-element="metal"] { --el: #86621c; --el-tint: #f2ebdc; }
+.el[data-element="water"] { --el: #2a5580; --el-tint: #e5ecf3; }
+
+/* ---- motion ------------------------------------------------------------- */
+
+.rise { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+
+.fade { animation: fade 0.35s ease both; }
+@keyframes fade { from { opacity: 0; } }
+
+/* Keyframes with only a `from` animate towards the element's own styles, so
+   one rule serves every bar and segment whatever its final size. */
+.grow { transform-origin: left center; animation: grow 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both; }
+@keyframes grow { from { transform: scaleX(0); } }
+
+.pop { animation: pop 0.55s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+@keyframes pop { from { opacity: 0; transform: scale(0.55); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise, .fade, .grow, .pop, .segment { animation: none; }
+  .tile, .node { transition: none; }
+  .tile:hover { transform: none; }
+}
+
+/* ---- shared ------------------------------------------------------------- */
+
+.header { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+.subline { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
+.eyebrow { font: 600 11px/1.5 Arial, "Noto Sans SC", sans-serif; letter-spacing: 0.22em; color: var(--red); }
+
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 12px;
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+/* ---- step 02: pillars --------------------------------------------------- */
+
+.calibButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 14px;
+  color: var(--jade);
+  background: #eef2ee;
+  border: 1px solid #c3d2c7;
+  cursor: pointer;
+}
+.calibButton svg { transition: transform 0.2s ease; }
+.calibButton[aria-expanded="true"] svg:last-child { transform: rotate(180deg); }
+
+.calibStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 16px;
+  padding: 14px 18px;
+  font-size: 14px;
+  background: rgba(23, 63, 53, 0.04);
+  border: 1px solid var(--line);
+}
+.calibStrip .arrow { color: var(--muted); }
+.calibStrip strong { color: var(--jade); font-weight: 600; }
+
+.board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.pillarGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+
+.pillarCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 12px;
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.pillarCardDay { border: 2px solid var(--jade); padding: 17px 11px; }
+
+.pillarLabel { font-size: 13px; color: var(--muted); }
+.pillarLabelDay { color: var(--red); font-weight: 600; }
+
+.godPill {
+  font-size: 13px;
+  padding: 1px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.godPillDay { background: var(--jade); color: #fff; border-color: var(--jade); }
+
+.tile {
+  width: 100%;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--el);
+  background: var(--el-tint);
+  border: 0;
+  border-radius: 2px;
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, outline-color 0.15s ease;
+}
+.tile:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(23, 63, 53, 0.14); }
+.tile:focus-visible, .tile[aria-pressed="true"] { outline-color: var(--jade); }
+.tileChar { font-size: 46px; font-weight: 700; line-height: 1; }
+.tileMeta { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+
+.hiddenList { display: grid; gap: 8px; width: 100%; }
+.hiddenRow { display: grid; gap: 4px; font-size: 13px; }
+.hiddenRow > div:first-child { display: flex; justify-content: space-between; }
+.hiddenRow b { color: var(--el); }
+.hiddenRow span:last-child { color: var(--muted); }
+.qiTrack { height: 4px; background: rgba(23, 32, 28, 0.08); }
+.qiBar { height: 4px; background: var(--el); }
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 22px;
+  background: rgba(23, 63, 53, 0.035);
+  border: 1px solid var(--line);
+}
+.asideChar { font-size: 64px; font-weight: 700; line-height: 1; color: var(--el); }
+.asideTitle { font-size: 19px; font-weight: 600; }
+.asidePlace { font-size: 14px; color: var(--muted); }
+.divider { height: 1px; background: var(--line); }
+.asideRelation { font-size: 15px; color: var(--jade); }
+.asideBody { margin: 0; font-size: 14px; line-height: 1.85; }
+.asideHint { margin-top: auto; font-size: 12px; color: var(--muted); }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 24px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.legend span.el { display: inline-flex; align-items: center; gap: 5px; color: var(--el); }
+
+/* ---- step 03: elements & ten gods --------------------------------------- */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 24px;
+  padding: 26px 28px;
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.sectionHead { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.sectionHead h3 { margin: 0; font-size: 21px; font-weight: 500; display: flex; align-items: center; gap: 12px; }
+.sectionHead > span { font-size: 13px; color: var(--muted); }
+
+.donutRow { display: flex; align-items: center; gap: 44px; flex-wrap: wrap; }
+.donut { position: relative; width: 200px; height: 200px; flex-shrink: 0; }
+.donutCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.donutCenter small { font-size: 12px; color: var(--muted); }
+.donutCenter strong { font-size: 28px; color: var(--el); }
+.segment { stroke: var(--el); animation: draw 0.9s ease-out both; }
+@keyframes draw { from { stroke-dasharray: 0 1000; } }
+
+.legendGrid { flex: 1; min-width: 280px; display: grid; gap: 12px; }
+.legendRow {
+  display: grid;
+  grid-template-columns: 18px 26px 128px minmax(0, 1fr) 44px 52px;
+  gap: 10px;
+  align-items: center;
+  font-size: 15px;
+  color: var(--el);
+}
+.legendRow .groupText { font-size: 13px; color: var(--muted); }
+.legendRow .num { color: var(--ink); text-align: right; }
+.legendRow .pct { font-size: 13px; color: var(--muted); text-align: right; }
+.barTrack { height: 8px; background: rgba(23, 32, 28, 0.07); }
+.barFill { height: 8px; background: var(--el); }
+
+.relationGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 400px) minmax(240px, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.cycle { position: relative; width: 100%; max-width: 400px; aspect-ratio: 400 / 380; }
+.cycle svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cycleCenter {
+  position: absolute;
+  left: 50%;
+  top: 51.3%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.cycleCenter small { font-size: 11px; color: var(--muted); }
+.cycleCenter strong { font-size: 18px; color: var(--el); }
+
+/* Positioned by its centre; the inner button keeps `transform` free for the
+   entrance animation. */
+.nodeWrap { position: absolute; transform: translate(-50%, -50%); }
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--el);
+  background: var(--el-tint);
+  border: 2px solid var(--el);
+  border-radius: 50%;
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, outline-color 0.15s ease;
+}
+.node:hover { box-shadow: 0 6px 18px rgba(23, 63, 53, 0.2); }
+.node:focus-visible, .node[aria-pressed="true"] { outline-color: var(--jade); }
+.nodeEmpty { border-style: dashed; }
+.nodeChar { font-size: 22px; font-weight: 700; line-height: 1; }
+.nodeLabel { font-size: 11px; }
+
+.cycleLegend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.cycleLegend span { display: inline-flex; align-items: center; gap: 8px; }
+.lineSolid, .lineDashed { display: inline-block; width: 26px; height: 0; }
+.lineSolid { border-top: 1.5px solid #9fb5a5; }
+.lineDashed { border-top: 1.5px dashed #a79f8e; }
+
+.groupNote {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 320px;
+  padding: 24px;
+  background: rgba(23, 63, 53, 0.035);
+  border: 1px solid var(--line);
+}
+.groupNoteHead { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.groupNoteHead b { font-size: 40px; line-height: 1; color: var(--el); }
+.groupNoteHead strong { font-size: 22px; font-weight: 600; }
+.groupNoteHead span { font-size: 15px; color: var(--muted); }
+.groupNote p { margin: 0; font-size: 14px; line-height: 1.85; }
+.positionList { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 14px; }
+.positionList li { display: flex; align-items: center; gap: 10px; }
+.positionList li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--el); }
+
+.factorList { display: grid; gap: 2px; }
+.factorRow {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 160px 132px;
+  gap: 14px;
+  align-items: center;
+  min-height: 50px;
+  padding: 0 12px;
+}
+.factorRow:nth-child(odd) { background: rgba(23, 63, 53, 0.035); }
+.factorRow b { font-size: 16px; font-weight: 600; }
+.factorRow .evidence { font-size: 14px; }
+.factorRow .value { font-size: 14px; text-align: right; }
+.factorTrack { height: 8px; background: rgba(23, 32, 28, 0.08); }
+.factorFill { height: 8px; background: var(--jade); }
+
+.scale { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; padding-top: 30px; }
+.scaleSeg { position: relative; display: grid; gap: 8px; font-size: 13px; color: var(--muted); text-align: center; }
+.scaleSeg::before { content: ""; height: 12px; background: rgba(23, 32, 28, 0.1); }
+.scaleSegActive { color: var(--red); font-weight: 600; }
+.scaleSegActive::before { background: var(--red); }
+.scaleChip {
+  position: absolute;
+  left: 50%;
+  top: -30px;
+  transform: translateX(-50%);
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  background: var(--red);
+  white-space: nowrap;
+}
+
+.checkList { display: grid; gap: 8px; }
+.checkRow {
+  display: grid;
+  grid-template-columns: auto 110px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 44px;
+  padding: 6px 14px;
+  font-size: 14px;
+  border: 1px solid var(--line);
+}
+.checkRow strong { font-size: 15px; }
+.checkStatus { padding: 2px 10px; font-size: 12px; color: var(--muted); background: rgba(23, 32, 28, 0.06); }
+.checkStatusOn { color: #fff; background: var(--jade); }
+
+.verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 16px 20px;
+  color: var(--jade);
+  background: #eef2ee;
+  border: 1px solid #c3d2c7;
+}
+.verdict strong { font-size: 22px; }
+.verdict span:last-child { font-size: 13px; }
+
+/* ---- narrow screens ----------------------------------------------------- */
+
+@media (max-width: 1080px) {
+  .board, .relationGrid { grid-template-columns: 1fr; }
+}
+@media (max-width: 800px) {
+  .pillarGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .factorRow { grid-template-columns: 48px minmax(0, 1fr); padding: 10px 12px; }
+  .factorRow .factorTrack, .factorRow .value { grid-column: 2; }
+  .legendRow { grid-template-columns: 18px 26px minmax(0, 1fr) 40px 48px; }
+  .legendRow .barTrack { display: none; }
+}
