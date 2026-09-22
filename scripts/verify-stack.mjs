@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 
 const frontend = process.env.FORTUNE_FRONTEND_URL || "http://localhost:3000";
 const module4 = process.env.FORTUNE_MODULE4_URL || "http://127.0.0.1:8003";
-const divinationApiUrl = process.env.FORTUNE_DIVINATION_URL || "http://127.0.0.1:8002";
+const divinationApiUrl = process.env.FORTUNE_ALGORITHM_URL || "http://127.0.0.1:8000";
 
 async function jsonRequest(url, init) {
   const response = await fetch(url, init);

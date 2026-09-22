@@ -28,30 +28,29 @@ npm install
 npm run dev:all
 ```
 
-浏览器打开 [http://localhost:3000](http://localhost:3000)。`dev:all` 会同时启动三个 Python
-后端、使用独立端口，并把持久数据写入 Codex 数据目录，避免按模块分别启动时的端口冲突。
+浏览器打开 [http://localhost:3000](http://localhost:3000)。`dev:all` 会同时启动组合算法服务、
+Module 4 后端和前端，并把持久数据写入 Codex 数据目录。
 
 默认端口和地址：
 
 ```env
-PYTHON_BAZI_BASE_URL=http://127.0.0.1:8001
-PYTHON_DIVINATION_BASE_URL=http://127.0.0.1:8002
-NEXT_PUBLIC_MODULE4_API_BASE_URL=http://127.0.0.1:8003
+PYTHON_ALGORITHM_BASE_URL=http://127.0.0.1:8000
+MODULE4_API_BASE_URL=http://127.0.0.1:8003
 ```
 
-`PYTHON_ALGORITHM_BASE_URL` 仅作为兼容回退，用于同时暴露
-`/bazi/chart` 和 `/divination/cast` 的单一组合服务。
+`PYTHON_BAZI_BASE_URL` 和 `PYTHON_DIVINATION_BASE_URL` 仍可作为可选覆盖项，
+用于把八字与易卦拆成独立进程部署。
 
 数据目录默认是 `~/Documents/Codex/fortune-data`，可通过 `FORTUNE_DATA_DIR` 修改；
 Python 运行环境放在项目自己的 `.runtime/` 目录。初次运行会创建隔离环境，因此第一次启动会比后续慢。
 
-如需分别启动六爻服务：
+如需单独启动组合算法服务：
 
 ```bash
 cd python_algorithm
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/uvicorn app:app --reload --port 8002
+.venv/bin/uvicorn app:app --reload --port 8000
 ```
 
 具体请求和返回结构见 [Python 算法接入说明](docs/API_INTEGRATION.md)。

@@ -412,8 +412,8 @@ export default function KnowledgeAgent({
   );
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(`module4-agent-${userId}`);
-    queueMicrotask(() => {
+    const timer = window.setTimeout(() => {
+      const stored = window.localStorage.getItem(`module4-agent-${userId}`);
       if (stored) {
         try {
           setMessages(JSON.parse(stored) as AgentMessage[]);
@@ -434,7 +434,8 @@ export default function KnowledgeAgent({
           sources: [],
         },
       ]);
-    });
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [userId]);
 
   useEffect(() => {

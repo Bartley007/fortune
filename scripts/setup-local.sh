@@ -23,11 +23,8 @@ ensure_venv() {
   "${path}/bin/pip" install --upgrade pip
 }
 
-ensure_venv bazi
-"${VENV_ROOT}/bazi/bin/pip" install -r "${ROOT_DIR}/bazi_service/requirements.txt"
-
-ensure_venv divination
-"${VENV_ROOT}/divination/bin/pip" install -r "${ROOT_DIR}/python_algorithm/requirements.txt"
+ensure_venv algorithms
+"${VENV_ROOT}/algorithms/bin/pip" install -r "${ROOT_DIR}/python_algorithm/requirements.txt"
 
 ensure_venv module4
 "${VENV_ROOT}/module4/bin/pip" install -e "${ROOT_DIR}/fortune_module4[dev]"

@@ -1,13 +1,18 @@
-:global(.divination-tools){display:grid;gap:28px}
-:global(.chat-panel){padding:30px}
-:global(.chat-history){display:grid;gap:12px;max-height:340px;overflow:auto;padding:4px 2px}
-:global(.chat-message){width:fit-content;max-width:min(88%,680px);margin:0;padding:11px 14px;line-height:1.7;font-size:14px}
-:global(.chat-message.assistant){background:#e8eee9;border-left:2px solid var(--jade)}
-:global(.chat-message.user){margin-left:auto;background:#fbf1df;border-right:2px solid var(--gold)}
-:global(.chat-suggestions){display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
-:global(.chat-suggestions button){border:1px solid var(--gold);background:transparent;padding:7px 10px;cursor:pointer;font-size:13px}
-:global(.chat-compose){display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px}
-:global(.chat-compose input){min-width:0;border:1px solid var(--line);background:#fffdf9;padding:13px 14px}
-:global(.chat-result){display:grid;gap:7px;margin-top:18px;padding:14px;border-top:1px solid var(--line);font-size:14px;line-height:1.7}
-:global(.chat-result strong){color:var(--jade)}
-@media(max-width:800px){:global(.chat-compose){grid-template-columns:1fr}}
+.chatPanel { padding: 30px; }
+.chatHistory { display: grid; gap: 12px; max-height: 340px; overflow: auto; padding: 4px 2px; }
+.chatMessage { width: fit-content; max-width: min(88%, 680px); margin: 0; padding: 11px 14px; line-height: 1.7; font-size: 14px; }
+.assistant { background: #e8eee9; border-left: 2px solid var(--jade); }
+.user { margin-left: auto; background: #fbf1df; border-right: 2px solid var(--gold); }
+.chatSuggestions { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.chatSuggestions button { border: 1px solid var(--gold); background: transparent; padding: 7px 10px; cursor: pointer; font-size: 13px; }
+.chatCompose { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 16px; }
+.chatCompose input { min-width: 0; border: 1px solid var(--line); background: #fffdf9; padding: 13px 14px; }
+.extraction { margin-top: 16px; border: 1px dashed var(--line); background: #f8f5ef; padding: 10px 14px; color: var(--ink-muted); font-size: 13px; }
+.extraction summary { cursor: pointer; color: var(--ink); font-weight: 700; }
+.extraction dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 12px; margin: 10px 0 0; }
+.extraction dt { font-weight: 700; }
+.extraction dd { margin: 0; overflow-wrap: anywhere; }
+
+@media (max-width: 800px) {
+  .chatCompose { grid-template-columns: 1fr; }
+}

@@ -23,3 +23,10 @@ def cast_divination(request: DivinationRequest):
 @app.get("/divination/catalog")
 def divination_catalog() -> list[dict[str, object]]:
     return hexagram_catalog()
+
+# --- BaZi module (bazi/) -----------------------------------------------------
+# Mounted here so both modules share one service, one port and the single
+# PYTHON_ALGORITHM_BASE_URL. Everything BaZi-specific lives under bazi/.
+from bazi.routers.bazi import router as bazi_router  # noqa: E402
+
+app.include_router(bazi_router)

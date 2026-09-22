@@ -1,5 +1,6 @@
 from app.models.base import Base
 from app.models.entities import (
+    AuthSessionRecord,
     CaseProfileRecord,
     CollectionRecord,
     EventRecord,
@@ -7,14 +8,17 @@ from app.models.entities import (
     FeedbackRecord,
     NoteRecord,
     PersonProfileRecord,
+    PasswordResetTokenRecord,
     PrivacySettingsRecord,
     RecommendationRecord,
     SessionRecord,
     TagRecord,
+    UserRecord,
 )
 
 __all__ = [
     "Base",
+    "AuthSessionRecord",
     "CaseProfileRecord",
     "CollectionRecord",
     "EventRecord",
@@ -22,8 +26,10 @@ __all__ = [
     "FeedbackRecord",
     "NoteRecord",
     "PersonProfileRecord",
+    "PasswordResetTokenRecord",
     "PrivacySettingsRecord",
     "RecommendationRecord",
     "SessionRecord",
     "TagRecord",
+    "UserRecord",
 ]

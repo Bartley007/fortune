@@ -11,7 +11,7 @@ T8 real luck cycles. Until then meta.mock stays true.
 
 from __future__ import annotations
 
-from ..models.bazi import (
+from bazi.models.bazi import (
     AdvisoryCategory,
     AdvisoryDomainResult,
     AnnualStemBranch,
@@ -34,7 +34,7 @@ from ..models.bazi import (
     StrengthFactor,
     TenGodRelation,
 )
-from ..models.enums import (
+from bazi.models.enums import (
     AdvisoryDomain,
     DayMasterStrength,
     Disposition,
@@ -49,10 +49,10 @@ from ..models.enums import (
     TenGod,
 )
 
-MOCK_WARNING = (
-    "Placeholder response. The calculation engine is not wired up yet; "
-    "no value below is derived from the submitted birth data."
-)
+# Shown to users in a Chinese UI, so it is written in Chinese. The frontend
+# labels the result "模拟命盘"; this line explains what that means rather than
+# repeating it.
+MOCK_WARNING = "计算引擎尚未接入：以下四柱、五行与建议均为占位示例，与所填出生信息无关。"
 
 # Shape illustration only. Real entries name the edition, chapter and page the
 # rule was read from, so a judgement can be checked against the text.
@@ -416,7 +416,8 @@ def build_mock_chart(request: BaziChartRequest) -> BaziChartResult:
         ),
         reasoning_trace=_reasoning_trace(),
         advisory=_advisory(),
-        overview="Placeholder overview. No value in this response reflects the submitted birth data.",
+        # Neutral placeholder — the warning above already says the data is fake.
+        overview="命局概述将在计算引擎接入后生成。",
         source_refs=PLACEHOLDER_SOURCES,
         meta=ResultMeta(
             mock=True,

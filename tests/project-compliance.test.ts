@@ -77,18 +77,16 @@ describe("数据资产合规", () => {
 });
 
 describe("运行协议合规", () => {
-  it("每个 Python 服务使用独立地址，且与 Module 4 端口不冲突", () => {
+  it("组合算法服务与 Module 4 使用独立地址", () => {
     const envExample = readText(".env.example");
-    const baziBaseUrl = envValue(envExample, "PYTHON_BAZI_BASE_URL");
-    const divinationBaseUrl = envValue(envExample, "PYTHON_DIVINATION_BASE_URL");
-    const module4BaseUrl = envValue(envExample, "NEXT_PUBLIC_MODULE4_API_BASE_URL");
+    const algorithmBaseUrl = envValue(envExample, "PYTHON_ALGORITHM_BASE_URL");
+    const module4BaseUrl = envValue(envExample, "MODULE4_API_BASE_URL");
 
-    expect(baziBaseUrl).toBeTruthy();
-    expect(divinationBaseUrl).toBeTruthy();
+    expect(algorithmBaseUrl).toBeTruthy();
     expect(module4BaseUrl).toBeTruthy();
 
-    const ports = [baziBaseUrl!, divinationBaseUrl!, module4BaseUrl!].map(portOf);
-    expect(new Set(ports).size).toBe(3);
+    const ports = [algorithmBaseUrl!, module4BaseUrl!].map(portOf);
+    expect(new Set(ports).size).toBe(2);
   });
 
   it("前端适配层显式区分八字和易卦后端", () => {

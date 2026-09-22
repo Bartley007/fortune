@@ -9,19 +9,12 @@ import type {
   DivinationChatMessage,
   DivinationChatReply,
 } from "@/lib/contracts/divination";
-import type { GuanyinStick } from "@/lib/guanyin/types";
 
-import "./divination-chatbot.module.css";
-
-type LotResult = {
-  stick: GuanyinStick;
-  question: string;
-  domain: string;
-  drawn_at: string;
-};
+import chatStyles from "./divination-chatbot.module.css";
+import HexagramEvolution from "./hexagram-evolution";
 
 const intro =
-  "我是问卦助手。先告诉我你要问的一件事；我会在必要时简短追问，再为你起卦或抽取观音灵签。";
+  "我是问卦助手。先告诉我你要问的一件事；我会简短确认时间范围和起卦数字，再为你推演卦象。";
 
 export default function DivinationChatbot() {
   const [messages, setMessages] = useState<DivinationChatMessage[]>([
@@ -31,7 +24,6 @@ export default function DivinationChatbot() {
   const [pending, setPending] = useState(false);
   const [reply, setReply] = useState<DivinationChatReply | null>(null);
   const [cast, setCast] = useState<DivinationCastResult | null>(null);
-  const [lot, setLot] = useState<LotResult | null>(null);
 
   async function send(value = input) {
     const content = value.trim();
@@ -42,7 +34,6 @@ export default function DivinationChatbot() {
     setPending(true);
     setReply(null);
     setCast(null);
-    setLot(null);
     try {
       const response = await fetch("/api/divination/chat", {
         method: "POST",
@@ -56,7 +47,6 @@ export default function DivinationChatbot() {
       const bot = payload.result;
       setReply(bot);
       setMessages((current) => [...current, { role: "assistant", content: bot.message }]);
-
       if (bot.cast_request) {
         const castResponse = await fetch("/api/divination/cast", {
           method: "POST",
@@ -81,56 +71,61 @@ export default function DivinationChatbot() {
           },
         ]);
       }
-
-      if (bot.guanyin_request) {
-        const lotResponse = await fetch("/api/guanyin-lot/draw", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify(bot.guanyin_request),
-        });
-        const lotPayload = (await lotResponse.json()) as ApiEnvelope<LotResult>;
-        const result = lotPayload.result;
-        if (!lotResponse.ok || !result) {
-          throw new Error(lotPayload.error?.message ?? "抽签服务暂不可用。");
-        }
-        setLot(result);
-        setMessages((current) => [
-          ...current,
-          {
-            role: "assistant",
-            content: `抽签完成：第 ${result.stick.id} 签「${result.stick.title}」（${result.stick.level}）。`,
-          },
-        ]);
-      }
     } catch (error) {
       setMessages((current) => [
         ...current,
-        {
-          role: "assistant",
-          content: error instanceof Error ? error.message : "服务暂不可用。",
-        },
+        { role: "assistant", content: error instanceof Error ? error.message : "服务暂不可用。" },
       ]);
     } finally {
       setPending(false);
     }
   }
 
+  const extraction = reply?.extraction;
   return (
-    <section className="panel chat-panel">
+    <section className={`panel ${chatStyles.chatPanel}`}>
       <p className="kicker">对话式问卦</p>
       <h2>先说事，再起卦</h2>
       <p className="panel-intro">
-        聊天助手只整理问题和必要信息；六爻结果来自规则引擎，观音签号来自服务端安全随机数。
+        聊天助手会整理问题、时间范围和起卦数字；本卦、动爻、互卦与变卦均由规则引擎计算。
       </p>
-      <div className="chat-history" aria-live="polite">
+      <div className={chatStyles.chatHistory} aria-live="polite">
         {messages.map((message, index) => (
-          <p className={`chat-message ${message.role}`} key={`${message.role}-${index}`}>
+          <p
+            className={`${chatStyles.chatMessage} ${chatStyles[message.role]}`}
+            key={`${message.role}-${index}`}
+          >
             {message.content}
           </p>
         ))}
       </div>
+      {extraction && (
+        <details className={chatStyles.extraction}>
+          <summary>解析信息（{extraction.source === "llm" ? "LLM" : "规则兜底"}）</summary>
+          <dl>
+            <dt>问题</dt>
+            <dd>{extraction.question ?? "未识别"}</dd>
+            <dt>时间</dt>
+            <dd>{extraction.time_range ?? "未识别"}</dd>
+            <dt>方式</dt>
+            <dd>{extraction.method ?? "未选择"}</dd>
+            {extraction.numbers?.length ? (
+              <>
+                <dt>数字</dt>
+                <dd>{extraction.numbers.join("、")}</dd>
+              </>
+            ) : null}
+            {extraction.fallback_reason ? (
+              <>
+                <dt>兜底原因</dt>
+                <dd>{extraction.fallback_reason}</dd>
+              </>
+            ) : null}
+          </dl>
+        </details>
+      )}
       {reply?.suggestions.length ? (
-        <div className="chat-suggestions">
+        <div className={chatStyles.chatSuggestions}>
           {reply.suggestions.map((suggestion) => (
             <button type="button" key={suggestion} onClick={() => send(suggestion)}>
               {suggestion}
@@ -138,14 +133,14 @@ export default function DivinationChatbot() {
           ))}
         </div>
       ) : null}
-      <div className="chat-compose">
+      <div className={chatStyles.chatCompose}>
         <input
           value={input}
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Enter") void send();
           }}
-          placeholder="例如：我想用六爻问未来三个月的工作，数字 18 和 27"
+          placeholder="例如：我想问未来三个月的工作，数字 18 和 27"
           disabled={pending}
         />
         <button
@@ -172,23 +167,28 @@ export default function DivinationChatbot() {
         />
       ) : null}
       {cast ? (
-        <div className="chat-result">
-          <strong>六爻计算结果</strong>
-          <span>
-            本卦：{cast.primary.name} · 互卦：{cast.mutual.name} · 变卦：
-            {cast.transformed.name}
-          </span>
+        <>
+          <HexagramEvolution result={cast} />
           {cast.reading ? (
-            <span>
-              本卦依据：{cast.reading.primary.judgment} · {cast.reading.primary.image}
-            </span>
+            <CollectionButton
+              action="interpretation"
+              evidence={cast.reading.source_refs.map((source) => source.title)}
+              itemType="divination_reading"
+              label="收藏易卦阅读依据"
+              module="divination"
+              sourceId={`divination-reading:${cast.primary.number}-${cast.moving_lines.join("-")}`}
+              step="reading-evidence"
+              summary={`本卦 ${cast.primary.name}；${cast.reading.primary.judgment}`}
+              tags={["易卦", "卦辞", "彖传", "象传"]}
+              title={`${cast.primary.name} · 周易原文依据`}
+              snapshot={{ reading: cast.reading, moving_lines: cast.moving_lines }}
+            />
           ) : null}
           <CollectionButton
             action="calculation"
             autoRecord
             evidence={cast.reading?.source_refs.map((source) => source.title) ?? []}
             itemType="divination_record"
-            key={`chat-cast-${messages.length}`}
             label="收藏卦象"
             module="divination"
             sourceId={`divination-chat-cast:${messages.length}`}
@@ -198,34 +198,7 @@ export default function DivinationChatbot() {
             title={`对话问卦 · ${cast.primary.name} → ${cast.transformed.name}`}
             snapshot={{ messages, cast }}
           />
-        </div>
-      ) : null}
-      {lot ? (
-        <div className="chat-result">
-          <span>所问：{lot.question}</span>
-          <strong>观音灵签 · 第 {lot.stick.id} 签</strong>
-          <span>{lot.stick.poem.join("，")}</span>
-          <span>{lot.stick.traditional.jieyue}</span>
-          <CollectionButton
-            action="interpretation"
-            autoRecord
-            evidence={[
-              lot.stick.traditional.jieyue,
-              lot.stick.traditional.xianji,
-              lot.stick.traditional.diangu,
-            ]}
-            itemType="sign_record"
-            key={`chat-lot-${lot.drawn_at}`}
-            label="收藏灵签"
-            module="guanyin"
-            sourceId={`guanyin-chat:${lot.drawn_at}`}
-            step="reading"
-            summary={`问：${lot.question}；第 ${lot.stick.id} 签「${lot.stick.title}」${lot.stick.level}。${lot.stick.traditional.jieyue}`}
-            tags={["观音灵签", lot.domain, `第${lot.stick.id}签`]}
-            title={`观音灵签 · 第${lot.stick.id}签 ${lot.stick.title}`}
-            snapshot={lot}
-          />
-        </div>
+        </>
       ) : null}
     </section>
   );

@@ -54,7 +54,6 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
-
 # local all-in-one runtime created by scripts/setup-local.sh
 /.runtime/
 
@@ -66,3 +65,5 @@ venv/
 *.sqlite
 *.sqlite3
 *.log
+
+.idea/

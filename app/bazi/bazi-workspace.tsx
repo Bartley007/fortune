@@ -8,17 +8,13 @@ import { CITY_OPTIONS } from "@/lib/bazi/cities";
 import { module4Api } from "@/lib/module4/api";
 import { getModule4UserId } from "@/lib/module4/activity";
 import type { PersonProfile } from "@/lib/module4/types";
+import { ElementsStep } from "./elements-step";
+import { PillarsStep } from "./pillars-step";
 import {
   BRANCH_LABEL,
   DISPOSITION_LABEL,
   DOMAIN_LABEL,
-  ELEMENT_LABEL,
-  FACTOR_LABEL,
-  PATTERN_LABEL,
-  PILLAR_LABEL,
-  QI_LABEL,
   STEM_LABEL,
-  STRENGTH_LABEL,
   TEN_GOD_LABEL,
 } from "@/lib/bazi/display";
 
@@ -33,7 +29,6 @@ const STEPS = [
 ] as const;
 
 const MINUTES = Array.from({ length: 60 }, (_, i) => i);
-
 const RELATION_OPTIONS = ["本人", "家人", "亲友", "客户", "研究案例", "其他"] as const;
 
 function coordinateParts(value: number, axis: "lat" | "lng") {
@@ -42,38 +37,6 @@ function coordinateParts(value: number, axis: "lat" | "lng") {
   const minutes = Math.round((absolute - degrees) * 60);
   const hemisphere = axis === "lat" ? (value >= 0 ? "N" : "S") : value >= 0 ? "E" : "W";
   return { hemisphere, degrees: String(degrees), minutes: String(Math.min(minutes, 59)) };
-}
-
-function StepNavigation({
-  step,
-  unlocked,
-  onGoto,
-  onRestart,
-}: {
-  step: number;
-  unlocked: boolean;
-  onGoto: (step: number) => void;
-  onRestart: () => void;
-}) {
-  return (
-    <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
-      {step > 1 && (
-        <button className="button" type="button" onClick={() => onGoto(step - 1)}>
-          上一步
-        </button>
-      )}
-      {step < STEPS.length && unlocked && (
-        <button className="button button-primary" type="button" onClick={() => onGoto(step + 1)}>
-          下一步
-        </button>
-      )}
-      {step === STEPS.length && (
-        <button className="button button-primary" type="button" onClick={onRestart}>
-          重新排盘
-        </button>
-      )}
-    </div>
-  );
 }
 
 /**
@@ -205,6 +168,40 @@ function DmsField({
   );
 }
 
+function StepNav({
+  step,
+  unlocked,
+  onNavigate,
+  onReset,
+}: {
+  step: number;
+  unlocked: boolean;
+  onNavigate: (target: number) => void;
+  onReset: () => void;
+}) {
+  const onLastStep = step === STEPS.length;
+
+  return (
+    <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
+      {step > 1 && (
+        <button className="button" type="button" onClick={() => onNavigate(step - 1)}>
+          上一步
+        </button>
+      )}
+      {step < STEPS.length && unlocked && (
+        <button className="button button-primary" type="button" onClick={() => onNavigate(step + 1)}>
+          下一步
+        </button>
+      )}
+      {onLastStep && (
+        <button className="button button-primary" type="button" onClick={onReset}>
+          重新排盘
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function BaziWorkspace() {
   const [step, setStep] = useState(1);
 
@@ -254,7 +251,8 @@ export default function BaziWorkspace() {
   // anything. The chart's own meta.mock is the authoritative one. Same for
   // warnings: Python puts them on the chart, the envelope carries its own.
   const isMock = chart?.meta?.mock ?? result?.meta.mock ?? false;
-  const warnings = [...(result?.warnings ?? []), ...(chart?.meta?.warnings ?? [])];
+  // De-duplicated: the Next.js fallback puts the same warning on both.
+  const warnings = [...new Set([...(result?.warnings ?? []), ...(chart?.meta?.warnings ?? [])])];
   const profileActivity = {
     profileId: profileId || undefined,
     personName: personName.trim() || undefined,
@@ -638,7 +636,7 @@ export default function BaziWorkspace() {
               )}
 
               <p className="form-note">
-                提示：真太阳时、节气交界与历法校准会影响专业排盘。结果不用于现实决策。
+                提示：真太阳时、节气交界与历法校准会影响专业排盘。演示结果不用于现实决策。
               </p>
               {notice && <p className="notice">{notice}</p>}
               {date && time && (
@@ -668,86 +666,15 @@ export default function BaziWorkspace() {
         {/* ---------------------------------------------------------- */}
         {step === 2 && chart && (
           <>
-            <h2>四柱排盘</h2>
-            <p className="kicker">{isMock ? "模拟命盘 · 计算引擎待接入" : "规则引擎计算结果"}</p>
-            {warnings.map((warning) => (
-              <p className="notice" key={warning}>
-                {warning}
-              </p>
-            ))}
-
-            <div className="pillars">
-              {chart.pillars.map((pillar) => (
-                <div className="pillar" key={pillar.label}>
-                  <small>{PILLAR_LABEL[pillar.label]}</small>
-                  <strong>
-                    {STEM_LABEL[pillar.stem]}
-                    {BRANCH_LABEL[pillar.branch]}
-                  </strong>
-                  <small>
-                    {ELEMENT_LABEL[pillar.element]} ·{" "}
-                    {pillar.ten_god ? TEN_GOD_LABEL[pillar.ten_god] : "日主"}
-                  </small>
-                  <small>
-                    藏干：
-                    {pillar.hidden_stems
-                      .map((hidden) => `${STEM_LABEL[hidden.stem]}(${QI_LABEL[hidden.qi]})`)
-                      .join("、")}
-                  </small>
-                </div>
-              ))}
-            </div>
-
-            <p className="panel-intro">{chart.overview}</p>
-
-            <CollectionButton
-              {...profileActivity}
-              action="calculation"
-              autoRecord
-              evidence={chart.source_refs.map((ref) =>
-                [ref.title, ref.edition, ref.chapter].filter(Boolean).join(" · "),
-              )}
-              itemType="bazi_record"
-              label="收藏命盘"
-              module="bazi"
-              sourceId={`bazi-chart:${result?.session_id ?? "local"}`}
-              step="chart"
-              key={`bazi-chart:${result?.session_id ?? "local"}`}
-              summary={`${personName.trim() || "未命名人物"} · ${chart.overview} 真太阳时 ${chart.resolved_time.true_solar_time}（${chart.resolved_time.timezone}）。`}
-              tags={["八字", "四柱"]}
-              title={`${personName.trim() || "未命名人物"} · 八字命盘 · ${chart.pillars.map((pillar) => `${STEM_LABEL[pillar.stem]}${BRANCH_LABEL[pillar.branch]}`).join(" ")}`}
-              snapshot={{ input: { birth_date: date, birth_time: time, calendar, cityId }, resolved_time: chart.resolved_time, pillars: chart.pillars }}
+            <PillarsStep
+              chart={chart}
+              isMock={isMock}
+              warnings={warnings}
+              profileActivity={profileActivity}
+              personName={personName}
+              sessionId={result?.session_id}
             />
-
-            <details>
-              <summary>时间校准</summary>
-              <p className="form-note">
-                公历 {chart.resolved_time.solar_date} {chart.resolved_time.civil_time}
-                （{chart.resolved_time.timezone}
-                {/* "UTC（UTC+0.0）" reads as a stutter; show the offset only
-                    when the zone name isn't already UTC. */}
-                {chart.resolved_time.timezone !== "UTC" && (
-                  <>
-                    ，UTC
-                    {chart.resolved_time.utc_offset_minutes >= 0 ? "+" : "−"}
-                    {Math.abs(chart.resolved_time.utc_offset_minutes / 60).toFixed(1)}
-                  </>
-                )}
-                {chart.resolved_time.dst_applied && "，已应用夏令时"}）
-                <br />
-                经度修正 {chart.resolved_time.longitude_correction_minutes.toFixed(1)} 分，
-                均时差 {chart.resolved_time.equation_of_time_minutes.toFixed(1)} 分 → 真太阳时{" "}
-                {chart.resolved_time.true_solar_time}
-                {chart.resolved_time.crossed_pillar_boundary && "（校正后跨越了时柱边界）"}
-              </p>
-            </details>
-
-            <StepNavigation
-              step={step}
-              unlocked={unlocked}
-              onGoto={goto}
-              onRestart={() => setStep(1)}
-            />
+            <StepNav step={step} unlocked={unlocked} onNavigate={goto} onReset={() => setStep(1)} />
           </>
         )}
 
@@ -756,100 +683,14 @@ export default function BaziWorkspace() {
         {/* ---------------------------------------------------------- */}
         {step === 3 && chart && (
           <>
-            <h2>五行十神</h2>
-
-            <p className="panel-intro">
-              五行分布：
-              {(Object.keys(chart.elements) as Array<keyof typeof chart.elements>)
-                .map((key) => `${ELEMENT_LABEL[key]} ${chart.elements[key]}`)
-                .join("　")}
-            </p>
-
-            <p className="panel-intro">
-              日主：{STEM_LABEL[chart.day_master.stem]}
-              {ELEMENT_LABEL[chart.day_master.element]} ·{" "}
-              {STRENGTH_LABEL[chart.day_master.strength]}
-              {chart.disposition.useful.length > 0 && (
-                <>　用神：{chart.disposition.useful.map((e) => ELEMENT_LABEL[e]).join("、")}</>
-              )}
-              {chart.disposition.unfavourable.length > 0 && (
-                <>
-                  　忌神：{chart.disposition.unfavourable.map((e) => ELEMENT_LABEL[e]).join("、")}
-                </>
-              )}
-            </p>
-
-            <p className="panel-intro">
-              十神：
-              {chart.ten_gods
-                .map(
-                  (relation) =>
-                    `${PILLAR_LABEL[relation.pillar]}${
-                      relation.position === "hidden" ? "藏干" : ""
-                    } ${TEN_GOD_LABEL[relation.ten_god]}`,
-                )
-                .join("　")}
-            </p>
-
-            <CollectionButton
-              {...profileActivity}
-              action="interpretation"
-              evidence={chart.reasoning_trace.factors.flatMap((factor) => factor.evidence)}
-              itemType="bazi_analysis"
-              label="收藏五行十神"
-              module="bazi"
-              sourceId={`bazi-elements:${result?.session_id ?? "local"}`}
-              step="elements"
-              summary={`${personName.trim() || "未命名人物"} · 五行分布 ${Object.entries(chart.elements).map(([key, value]) => `${ELEMENT_LABEL[key as keyof typeof chart.elements]} ${value}`).join("，")}；十神 ${chart.ten_gods.map((relation) => TEN_GOD_LABEL[relation.ten_god]).join("、")}。`}
-              tags={["八字", "五行", "十神"]}
-              title={`${personName.trim() || "未命名人物"} · 五行十神依据`}
-              snapshot={{ elements: chart.elements, day_master: chart.day_master, ten_gods: chart.ten_gods, reasoning_trace: chart.reasoning_trace }}
+            <ElementsStep
+              chart={chart}
+              isMock={isMock}
+              profileActivity={profileActivity}
+              personName={personName}
+              sessionId={result?.session_id}
             />
-
-            {/* The explainability deliverable: the arbitration made inspectable. */}
-            <details>
-              <summary>判断依据</summary>
-              <ul>
-                {chart.reasoning_trace.factors.map((factor) => (
-                  <li key={factor.key}>
-                    {FACTOR_LABEL[factor.key] ?? factor.key}：{factor.score} × {factor.weight} ={" "}
-                    {factor.weighted_score.toFixed(2)}
-                    {factor.evidence.length > 0 && <>（{factor.evidence.join("；")}）</>}
-                  </li>
-                ))}
-              </ul>
-              <p className="panel-intro">
-                加权合计 {chart.reasoning_trace.fused_score.toFixed(2)} →{" "}
-                {STRENGTH_LABEL[chart.reasoning_trace.provisional_strength]}
-                {chart.reasoning_trace.near_threshold && "（接近临界，建议人工复核）"}
-              </p>
-              {chart.reasoning_trace.override && (
-                <p className="panel-intro">
-                  格局判定：{PATTERN_LABEL[chart.reasoning_trace.override.pattern]}
-                  {chart.reasoning_trace.override.triggered ? " 成立" : " 不成立"} ——{" "}
-                  {chart.reasoning_trace.override.rationale}
-                  {chart.reasoning_trace.override.ruled_out.length > 0 && (
-                    <>
-                      <br />
-                      已排除：
-                      {chart.reasoning_trace.override.ruled_out
-                        .map((item) => `${PATTERN_LABEL[item.pattern]}（${item.reason}）`)
-                        .join("；")}
-                    </>
-                  )}
-                </p>
-              )}
-              <p className="panel-intro">
-                最终判定：{STRENGTH_LABEL[chart.reasoning_trace.final_strength]}
-              </p>
-            </details>
-
-            <StepNavigation
-              step={step}
-              unlocked={unlocked}
-              onGoto={goto}
-              onRestart={() => setStep(1)}
-            />
+            <StepNav step={step} unlocked={unlocked} onNavigate={goto} onReset={() => setStep(1)} />
           </>
         )}
 
@@ -902,12 +743,7 @@ export default function BaziWorkspace() {
               snapshot={{ luck_cycles: chart.luck_cycles, current_period: chart.current_period }}
             />
 
-            <StepNavigation
-              step={step}
-              unlocked={unlocked}
-              onGoto={goto}
-              onRestart={() => setStep(1)}
-            />
+            <StepNav step={step} unlocked={unlocked} onNavigate={goto} onReset={() => setStep(1)} />
           </>
         )}
 
@@ -981,12 +817,7 @@ export default function BaziWorkspace() {
               snapshot={{ advisory: chart.advisory, disposition: chart.disposition, source_refs: chart.source_refs }}
             />
 
-            <StepNavigation
-              step={step}
-              unlocked={unlocked}
-              onGoto={goto}
-              onRestart={() => setStep(1)}
-            />
+            <StepNav step={step} unlocked={unlocked} onNavigate={goto} onReset={() => setStep(1)} />
           </>
         )}
       </section>

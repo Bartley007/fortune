@@ -7,8 +7,7 @@ RUNTIME_ROOT="${FORTUNE_RUNTIME_DIR:-${ROOT_DIR}/.runtime}"
 VENV_ROOT="${FORTUNE_VENV_ROOT:-${RUNTIME_ROOT}/venvs}"
 LOG_DIR="${DATA_ROOT}/logs"
 FRONTEND_PORT="${FRONTEND_PORT:-3000}"
-BAZI_PORT="${BAZI_PORT:-8001}"
-DIVINATION_PORT="${DIVINATION_PORT:-8002}"
+ALGORITHM_PORT="${ALGORITHM_PORT:-8000}"
 MODULE4_PORT="${MODULE4_PORT:-8003}"
 LLM_PROVIDER_VALUE="${LLM_PROVIDER:-}"
 LLM_MODEL_VALUE="${LLM_MODEL:-qwen3.8:27b-q8_0}"
@@ -31,7 +30,7 @@ if [[ ! -d "${ROOT_DIR}/node_modules" ]]; then
   (cd "${ROOT_DIR}" && npm ci --no-audit --no-fund)
 fi
 
-if [[ ! -x "${VENV_ROOT}/bazi/bin/uvicorn" || ! -x "${VENV_ROOT}/divination/bin/uvicorn" || ! -x "${VENV_ROOT}/module4/bin/uvicorn" ]]; then
+if [[ ! -x "${VENV_ROOT}/algorithms/bin/uvicorn" || ! -x "${VENV_ROOT}/module4/bin/uvicorn" ]]; then
   bash "${ROOT_DIR}/scripts/setup-local.sh"
 fi
 
@@ -62,17 +61,10 @@ wait_for_http() {
 }
 
 (
-  cd "${ROOT_DIR}/bazi_service"
-  env PYTHONUNBUFFERED=1 "${VENV_ROOT}/bazi/bin/uvicorn" \
-    app.main:app --host 127.0.0.1 --port "${BAZI_PORT}"
-) >"${LOG_DIR}/bazi.log" 2>&1 &
-pids+=("$!")
-
-(
   cd "${ROOT_DIR}/python_algorithm"
-  env PYTHONUNBUFFERED=1 "${VENV_ROOT}/divination/bin/uvicorn" \
-    app:app --host 127.0.0.1 --port "${DIVINATION_PORT}"
-) >"${LOG_DIR}/divination.log" 2>&1 &
+  env PYTHONUNBUFFERED=1 "${VENV_ROOT}/algorithms/bin/uvicorn" \
+    app:app --host 127.0.0.1 --port "${ALGORITHM_PORT}"
+) >"${LOG_DIR}/algorithms.log" 2>&1 &
 pids+=("$!")
 
 database_path="${DATA_ROOT}/module4/module4.db"
@@ -96,17 +88,17 @@ database_path="${DATA_ROOT}/module4/module4.db"
 ) >"${LOG_DIR}/module4.log" 2>&1 &
 pids+=("$!")
 
-wait_for_http "BaZi service" "http://127.0.0.1:${BAZI_PORT}/health"
-wait_for_http "Divination service" "http://127.0.0.1:${DIVINATION_PORT}/docs"
+wait_for_http "Algorithm service" "http://127.0.0.1:${ALGORITHM_PORT}/docs"
 wait_for_http "Module 4" "http://127.0.0.1:${MODULE4_PORT}/health"
 
 (
   cd "${ROOT_DIR}"
   env \
-    PYTHON_BAZI_BASE_URL="http://127.0.0.1:${BAZI_PORT}" \
-    PYTHON_DIVINATION_BASE_URL="http://127.0.0.1:${DIVINATION_PORT}" \
-    NEXT_PUBLIC_MODULE4_API_BASE_URL="http://127.0.0.1:${MODULE4_PORT}" \
-    NEXT_PUBLIC_MODULE4_USER_ID=dev-user \
+    PYTHON_ALGORITHM_BASE_URL="http://127.0.0.1:${ALGORITHM_PORT}" \
+    MODULE4_API_BASE_URL="http://127.0.0.1:${MODULE4_PORT}" \
+    LLM_BASE_URL="${LLM_BASE_URL_VALUE}" \
+    LLM_API_KEY="${LLM_API_KEY_VALUE}" \
+    LLM_MODEL="${LLM_MODEL_VALUE}" \
     npm run dev -- --hostname 0.0.0.0 --port "${FRONTEND_PORT}"
 ) >"${LOG_DIR}/frontend.log" 2>&1 &
 pids+=("$!")
@@ -115,8 +107,7 @@ wait_for_http "Frontend" "http://localhost:${FRONTEND_PORT}"
 
 printf '\nFortune is running:\n'
 printf '  Frontend:  http://localhost:%s\n' "${FRONTEND_PORT}"
-printf '  BaZi:      http://127.0.0.1:%s/docs\n' "${BAZI_PORT}"
-printf '  Divination:http://127.0.0.1:%s/docs\n' "${DIVINATION_PORT}"
+printf '  Algorithms:http://127.0.0.1:%s/docs\n' "${ALGORITHM_PORT}"
 printf '  Module 4:  http://127.0.0.1:%s/docs\n' "${MODULE4_PORT}"
 printf '  Logs:      %s\n\n' "${LOG_DIR}"
 
@@ -124,4 +115,4 @@ if [[ "${OPEN_BROWSER:-0}" == "1" ]]; then
   open "http://localhost:${FRONTEND_PORT}"
 fi
 
-wait "${pids[3]}"
+wait "${pids[2]}"
