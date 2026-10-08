@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import chatStyles from "./divination-chatbot.module.css";
 import type { ApiEnvelope } from "@/lib/contracts/api";
 import type { DivinationCastResult, DivinationChatMessage, DivinationChatReply } from "@/lib/contracts/divination";
@@ -14,12 +14,27 @@ export default function DivinationChatbot() {
   const [pending, setPending] = useState(false);
   const [reply, setReply] = useState<DivinationChatReply | null>(null);
   const [cast, setCast] = useState<DivinationCastResult | null>(null);
+  const sessionId = useRef<string | null>(null);
+  const sequence = useRef(0);
+
+  function saveHistory(eventType: string, payload: Record<string, unknown>) {
+    sessionId.current ??= crypto.randomUUID();
+    const eventId = crypto.randomUUID();
+    sequence.current += 1;
+    void fetch("/api/session/event", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ session_id: sessionId.current, event_id: eventId, event_type: eventType, module: "divination", sequence_no: sequence.current, payload }),
+      keepalive: true,
+    }).catch(() => undefined);
+  }
 
   async function send(value = input) {
     const content = value.trim();
     if (!content || pending) return;
     const next = [...messages, { role: "user" as const, content }];
     setMessages(next); setInput(""); setPending(true); setReply(null); setCast(null);
+    saveHistory("module2a.chat.user_message", { role: "user", content, message_index: next.length - 1, inference_eligible: false });
     try {
       const response = await fetch("/api/divination/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ messages: next }) });
       const payload = await response.json() as ApiEnvelope<DivinationChatReply>;
@@ -27,13 +42,26 @@ export default function DivinationChatbot() {
       const bot = payload.result;
       setReply(bot);
       setMessages(current => [...current, { role: "assistant", content: bot.message }]);
+      saveHistory("module2a.chat.assistant_message", { role: "assistant", content: bot.message, status: bot.status, message_index: next.length, inference_eligible: false });
       if (bot.cast_request) {
         const castResponse = await fetch("/api/divination/cast", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(bot.cast_request) });
         const castPayload = await castResponse.json() as ApiEnvelope<DivinationCastResult>;
         const result = castPayload.result;
         if (!castResponse.ok || !result) throw new Error(castPayload.error?.message ?? "起卦服务暂不可用。");
         setCast(result);
-        setMessages(current => [...current, { role: "assistant", content: `起卦完成：本卦「${result.primary.name}」，${result.moving_lines.length ? `动爻为第 ${result.moving_lines.join("、")} 爻` : "本次无动爻"}，变卦「${result.transformed.name}」。` }]);
+        const completionMessage = `起卦完成：本卦「${result.primary.name}」，${result.moving_lines.length ? `动爻为第 ${result.moving_lines.join("、")} 爻` : "本次无动爻"}，变卦「${result.transformed.name}」。`;
+        setMessages(current => [...current, { role: "assistant", content: completionMessage }]);
+        saveHistory("module2a.chat.assistant_message", { role: "assistant", content: completionMessage, message_index: next.length + 1, inference_eligible: false });
+        saveHistory("module2a.divination.completed", {
+          divination_id: crypto.randomUUID(),
+          method: bot.cast_request.method,
+          primary_hexagram: { number: result.primary.number, name: result.primary.name },
+          changed_hexagram: { number: result.transformed.number, name: result.transformed.name },
+          moving_lines: result.moving_lines,
+          intent: { topic: bot.extraction?.question ?? bot.cast_request.question, symbols: [result.primary.name, result.transformed.name] },
+          time_range: bot.extraction?.time_range ?? bot.cast_request.time_range,
+          inference_eligible: true,
+        });
       }
     } catch (error) {
       setMessages(current => [...current, { role: "assistant", content: error instanceof Error ? error.message : "服务暂不可用。" }]);
