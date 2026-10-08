@@ -135,7 +135,10 @@ def recommend_next_actions(
 
     db.commit()
     event_count = db.scalar(
-        select(func.count(EventRecord.id)).where(EventRecord.session_id == payload.session_id)
+        select(func.count(EventRecord.id)).where(
+            EventRecord.session_id == payload.session_id,
+            EventRecord.inference_eligible.is_(True),
+        )
     )
     cold_start = int(event_count or 0) <= 1 and not feedback_signals
     if not payload.candidates:

@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from app.api.deps import CurrentUserId, DatabaseSession
 from app.schemas.common import Envelope, success_envelope
@@ -34,9 +34,13 @@ def get_session_events(
     session_id: str,
     db: DatabaseSession,
     user_id: CurrentUserId,
+    inference_only: bool = Query(default=False),
 ) -> Envelope[list[EventOut]]:
     session = get_session_or_404(db, user_id, session_id)
-    events = [event_to_schema(record) for record in list_session_events(db, session_id)]
+    events = [
+        event_to_schema(record)
+        for record in list_session_events(db, session_id, inference_only=inference_only)
+    ]
     source_refs = sorted({ref for event in events for ref in event.source_refs})
     return success_envelope(
         events,

@@ -87,3 +87,79 @@ def test_feedback_changes_next_recommendation(client: TestClient) -> None:
     )
     assert response.status_code == 200
     assert response.json()["result"]["items"][0]["candidate_id"] == "with-feedback-signal"
+
+
+def test_recommendation_cold_start_ignores_conversation_history(
+    client: TestClient,
+) -> None:
+    session_id = create_session(client)
+    for sequence_no in (1, 2):
+        response = client.post(
+            "/api/session/event",
+            json={
+                "session_id": session_id,
+                "event_type": "conversation.message",
+                "module": "divination",
+                "source_module": "module2a",
+                "sequence_no": sequence_no,
+                "user_id": "user-a",
+                "payload": {"role": "user", "content": f"普通对话 {sequence_no}"},
+            },
+        )
+        assert response.status_code == 200
+
+    completion = client.post(
+        "/api/v1/events/ingest",
+        headers={**headers(), "X-Idempotency-Key": "recommendation-completion"},
+        json={
+            "session_id": session_id,
+            "source_module": "module2a",
+            "event_type": "module2a.divination.completed",
+            "sequence_no": 3,
+            "system": "divination",
+            "payload": {"divination_id": "div-recommendation-1"},
+        },
+    )
+    assert completion.status_code == 200
+
+    response = client.post(
+        "/api/v1/recommendations/next",
+        headers=headers(),
+        json={
+            "session_id": session_id,
+            "top_k": 1,
+            "candidates": [
+                {
+                    "candidate_id": "eligible-only",
+                    "item_id": "knowledge-eligible",
+                    "features": {"semantic_similarity": 0.8},
+                }
+            ],
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["result"]["cold_start"] is True
+
+
+def test_feedback_creates_a_whitelisted_feedback_event(client: TestClient) -> None:
+    session_id = create_session(client)
+    feedback = client.post(
+        "/api/v1/feedback",
+        headers=headers(),
+        json={
+            "session_id": session_id,
+            "item_id": "knowledge-3",
+            "feedback_type": "useful",
+        },
+    )
+    assert feedback.status_code == 200
+
+    events = client.get(
+        f"/api/v1/sessions/{session_id}/events?inference_only=true",
+        headers=headers(),
+    )
+    assert events.status_code == 200
+    event = events.json()["result"][0]
+    assert event["event_type"] == "feedback.submitted"
+    assert event["inference_eligible"] is True
+    assert event["payload"]["feedback_id"] == feedback.json()["result"]["feedback_id"]

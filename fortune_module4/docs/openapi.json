@@ -83,6 +83,16 @@
             }
           },
           {
+            "name": "inference_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Inference Only"
+            }
+          },
+          {
             "name": "X-User-Id",
             "in": "header",
             "required": false,
@@ -1549,6 +1559,10 @@
               }
             ],
             "title": "Idempotency Key"
+          },
+          "inference_eligible": {
+            "type": "boolean",
+            "title": "Inference Eligible"
           }
         },
         "type": "object",
@@ -1557,7 +1571,8 @@
           "event_count",
           "event_id",
           "duplicate",
-          "idempotency_key"
+          "idempotency_key",
+          "inference_eligible"
         ],
         "title": "CompatEventData"
       },
@@ -2775,6 +2790,10 @@
             "type": "string",
             "title": "Event Type"
           },
+          "inference_eligible": {
+            "type": "boolean",
+            "title": "Inference Eligible"
+          },
           "sequence_no": {
             "type": "integer",
             "title": "Sequence No"
@@ -2817,6 +2836,7 @@
           "user_id",
           "source_module",
           "event_type",
+          "inference_eligible",
           "sequence_no",
           "occurred_at",
           "system",

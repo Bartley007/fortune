@@ -47,6 +47,7 @@ def test_event_ingestion_is_idempotent_and_ordered(client: TestClient) -> None:
     )
     assert response.status_code == 200
     assert response.json()["result"]["duplicate"] is False
+    assert response.json()["result"]["event"]["inference_eligible"] is True
 
     response = client.post(
         "/api/v1/events/ingest",
@@ -67,6 +68,56 @@ def test_event_ingestion_is_idempotent_and_ordered(client: TestClient) -> None:
     assert events.status_code == 200
     sequence_numbers = [item["sequence_no"] for item in events.json()["result"]]
     assert sequence_numbers == [1, 2]
+
+
+def test_conversation_history_is_archived_but_excluded_from_inference(
+    client: TestClient,
+) -> None:
+    session_id = create_session(client)
+
+    for sequence_no, role, content in (
+        (1, "user", "我想问未来三个月的工作安排。"),
+        (2, "assistant", "请提供两个正整数用于起卦。"),
+    ):
+        response = client.post(
+            "/api/session/event",
+            json={
+                "session_id": session_id,
+                "event_type": "conversation.message",
+                "module": "divination",
+                "source_module": "module2a",
+                "sequence_no": sequence_no,
+                "user_id": "user-a",
+                "payload": {"role": role, "content": content},
+            },
+        )
+        assert response.status_code == 200
+        assert response.json()["result"]["inference_eligible"] is False
+
+    completion = client.post(
+        "/api/v1/events/ingest",
+        headers={**headers(), "X-Idempotency-Key": "conversation-completion"},
+        json=event_payload(session_id, 3),
+    )
+    assert completion.status_code == 200
+    assert completion.json()["result"]["event"]["inference_eligible"] is True
+
+    history = client.get(f"/api/v1/sessions/{session_id}/events", headers=headers())
+    assert history.status_code == 200
+    assert [event["event_type"] for event in history.json()["result"]] == [
+        "conversation.message",
+        "conversation.message",
+        "module2a.divination.completed",
+    ]
+
+    inference_events = client.get(
+        f"/api/v1/sessions/{session_id}/events?inference_only=true",
+        headers=headers(),
+    )
+    assert inference_events.status_code == 200
+    assert [event["event_type"] for event in inference_events.json()["result"]] == [
+        "module2a.divination.completed"
+    ]
 
 
 def test_session_events_are_isolated_by_user(client: TestClient) -> None:
