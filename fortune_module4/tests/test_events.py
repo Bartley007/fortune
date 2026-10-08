@@ -128,3 +128,41 @@ def test_session_events_are_isolated_by_user(client: TestClient) -> None:
     )
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "NOT_FOUND"
+
+
+def test_session_history_list_returns_activity_and_preview(client: TestClient) -> None:
+    session_id = create_session(client)
+    for sequence_no, role, content in (
+        (1, "user", "我想问未来三个月的工作安排。"),
+        (2, "assistant", "请提供两个正整数用于起卦。"),
+    ):
+        response = client.post(
+            "/api/session/event",
+            json={
+                "session_id": session_id,
+                "event_type": "conversation.message",
+                "module": "divination",
+                "source_module": "module2a",
+                "sequence_no": sequence_no,
+                "user_id": "user-a",
+                "payload": {"role": role, "content": content},
+            },
+        )
+        assert response.status_code == 200
+
+    completion = client.post(
+        "/api/v1/events/ingest",
+        headers={**headers(), "X-Idempotency-Key": "history-list-completion"},
+        json=event_payload(session_id, 3),
+    )
+    assert completion.status_code == 200
+
+    sessions = client.get("/api/v1/sessions", headers=headers())
+    assert sessions.status_code == 200
+    item = next(
+        session for session in sessions.json()["result"] if session["session_id"] == session_id
+    )
+    assert item["event_count"] == 3
+    assert item["conversation_count"] == 2
+    assert item["last_message_preview"] == "请提供两个正整数用于起卦。"
+    assert item["last_event_at"] is not None

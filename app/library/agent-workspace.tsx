@@ -7,6 +7,8 @@ import {
   Download,
   ExternalLink,
   FileText,
+  History,
+  MessageSquare,
   NotebookPen,
   Pencil,
   Plus,
@@ -31,11 +33,13 @@ import type {
   NoteItem,
   PersonProfile,
   PrivacySettings,
+  SessionHistoryEvent,
+  SessionHistoryItem,
   TagItem,
 } from "@/lib/module4/types";
 import type { AuthUser } from "@/lib/auth/types";
 
-type TabId = "all" | "sources" | "readings" | "notes" | "profiles";
+type TabId = "all" | "sources" | "readings" | "history" | "notes" | "profiles";
 
 const emptyCollectionDraft: CollectionDraft = {
   itemType: "knowledge_item",
@@ -58,6 +62,7 @@ const tabs: Array<{ id: TabId; label: string }> = [
   { id: "all", label: "全部收藏" },
   { id: "sources", label: "典籍原文" },
   { id: "readings", label: "术数记录" },
+  { id: "history", label: "会话历史" },
   { id: "notes", label: "个人笔记" },
   { id: "profiles", label: "人物档案" },
 ];
@@ -170,6 +175,47 @@ function formatDate(value: string): string {
   }).format(new Date(value));
 }
 
+function formatDateTime(value: string): string {
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function sessionSystemLabel(value: string): string {
+  const labels: Record<string, string> = {
+    bazi: "八字分析",
+    divination: "智能问卦",
+    sign: "观音灵签",
+    knowledge: "典籍检索",
+  };
+  return labels[value] ?? value;
+}
+
+function conversationContent(event: SessionHistoryEvent): string {
+  const value = event.payload.content;
+  return typeof value === "string" ? value : "";
+}
+
+function conversationRole(event: SessionHistoryEvent): string {
+  const value = event.payload.role;
+  return value === "user" || value === "assistant" ? value : "system";
+}
+
+function historyEventLabel(event: SessionHistoryEvent): string {
+  const labels: Record<string, string> = {
+    "conversation.message": "对话记录",
+    "module1.chart.completed": "八字排盘完成",
+    "module2a.divination.completed": "起卦完成",
+    "feedback.submitted": "用户反馈",
+    "knowledge.item.opened": "阅读典籍",
+  };
+  return labels[event.event_type] ?? event.event_type;
+}
+
 function sourceUrl(item: CollectionItem): string | null {
   const value = item.source_metadata?.url;
   return typeof value === "string" && value.trim() ? value : null;
@@ -254,6 +300,10 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
   const [notes, setNotes] = useState<NoteItem[]>([]);
   const [tagItems, setTagItems] = useState<TagItem[]>([]);
   const [profiles, setProfiles] = useState<PersonProfile[]>([]);
+  const [sessions, setSessions] = useState<SessionHistoryItem[]>([]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [sessionEvents, setSessionEvents] = useState<SessionHistoryEvent[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [privacy, setPrivacy] = useState<PrivacySettings | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [query, setQuery] = useState("");
@@ -287,12 +337,20 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
       setLoading(true);
       setError(null);
       try {
-        const [nextCollections, nextNotes, nextTags, nextPrivacy, nextProfiles] = await Promise.all([
+        const [
+          nextCollections,
+          nextNotes,
+          nextTags,
+          nextPrivacy,
+          nextProfiles,
+          nextSessions,
+        ] = await Promise.all([
           module4Api.listCollections(activeUser),
           module4Api.listNotes(activeUser),
           module4Api.listTags(activeUser),
           module4Api.getPrivacy(activeUser),
           module4Api.listPersonProfiles(activeUser),
+          module4Api.listSessions(activeUser),
         ]);
         if (!cancelled) {
           setCollections(nextCollections);
@@ -300,6 +358,10 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
           setTagItems(nextTags);
           setPrivacy(nextPrivacy);
           setProfiles(nextProfiles);
+          setSessions(nextSessions);
+          const firstSessionId = nextSessions[0]?.session_id ?? null;
+          setSelectedSessionId((current) => current ?? firstSessionId);
+          setHistoryLoading(Boolean(firstSessionId));
         }
       } catch (loadError) {
         if (!cancelled) {
@@ -375,6 +437,40 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
     });
   }, [activeTagFilter, profiles, query]);
 
+  const filteredSessions = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    return sessions.filter((session) => {
+      if (!normalizedQuery) return true;
+      return [
+        session.title,
+        session.session_id,
+        sessionSystemLabel(session.system),
+        session.last_message_preview,
+      ]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(normalizedQuery));
+    });
+  }, [query, sessions]);
+
+  useEffect(() => {
+    if (!selectedSessionId) return;
+    let cancelled = false;
+    module4Api
+      .getSessionEvents(activeUser, selectedSessionId)
+      .then((events) => {
+        if (!cancelled) setSessionEvents(events);
+      })
+      .catch((historyError) => {
+        if (!cancelled) setError(messageFrom(historyError));
+      })
+      .finally(() => {
+        if (!cancelled) setHistoryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeUser, selectedSessionId]);
+
   const profileRecordCounts = useMemo(() => {
     const counts = new Map<string, number>();
     for (const item of collections) {
@@ -424,7 +520,11 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
   }, [tagItems, tagUsage]);
 
   const hasVisibleItems =
-    filteredCollections.length + filteredNotes.length + filteredProfiles.length > 0;
+    filteredCollections.length +
+      filteredNotes.length +
+      filteredProfiles.length +
+      filteredSessions.length >
+    0;
 
   async function refreshPersonalData(successMessage: string) {
     setBusy(true);
@@ -708,6 +808,7 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
         <div className="page-shell">
           <a href="#agent">知识助手</a>
           <a href="#profiles">人物档案</a>
+          <a href="#history">会话历史</a>
           <a href="#collections">个人收藏</a>
           <a href="#notes">知识笔记</a>
           <a href="#tags">标签</a>
@@ -748,6 +849,10 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
                 <Link className="button button-primary" href="/bazi">
                   <Users size={15} /> 前往八字建立档案
                 </Link>
+              ) : activeTab === "history" ? (
+                <Link className="button button-primary" href="/divination">
+                  <MessageSquare size={15} /> 发起新的问卦
+                </Link>
               ) : (
                 <>
                   <button
@@ -769,7 +874,7 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
             </div>
           </div>
 
-          {activeTab !== "profiles" ? <div className="filter-bar">
+          {activeTab !== "profiles" && activeTab !== "history" ? <div className="filter-bar">
             <label>
               <span>分类</span>
               <select
@@ -826,12 +931,22 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
               <strong>{profiles.length}</strong>
               <span>人物档案</span>
             </div>
+            <div>
+              <strong>{sessions.length}</strong>
+              <span>会话历史</span>
+            </div>
             <label className="search-box">
               <Search size={16} />
               <input
                 aria-label="搜索收藏和笔记"
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder={activeTab === "profiles" ? "搜索人物、分类或命盘" : "搜索标题、正文或来源"}
+                placeholder={
+                  activeTab === "profiles"
+                    ? "搜索人物、分类或命盘"
+                    : activeTab === "history"
+                      ? "搜索会话主题或最近消息"
+                      : "搜索标题、正文或来源"
+                }
                 value={query}
               />
             </label>
@@ -851,6 +966,104 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
             <div className="panel empty-state">
               <p className="kicker">正在读取</p>
               <h2>载入个人收藏</h2>
+            </div>
+          ) : activeTab === "history" ? (
+            <div className="history-layout" id="history">
+              <div className="history-list" role="list">
+                {filteredSessions.length ? (
+                  filteredSessions.map((session) => (
+                    <button
+                      className={`history-item ${
+                        selectedSessionId === session.session_id ? "active" : ""
+                      }`}
+                      key={session.session_id}
+                      onClick={() => {
+                        setSessionEvents([]);
+                        setHistoryLoading(true);
+                        setSelectedSessionId(session.session_id);
+                      }}
+                      role="listitem"
+                      type="button"
+                    >
+                      <span className="history-item-icon">
+                        <History size={18} />
+                      </span>
+                      <span className="history-item-body">
+                        <span className="history-item-meta">
+                          <span className="category-badge">
+                            {sessionSystemLabel(session.system)}
+                          </span>
+                          <time>{formatDateTime(session.started_at)}</time>
+                        </span>
+                        <strong>{session.title || "问卦会话"}</strong>
+                        <span className="history-preview">
+                          {session.last_message_preview || "已保存结构化术数记录"}
+                        </span>
+                        <span className="history-counts">
+                          {session.conversation_count} 条对话 · {session.event_count} 条事件
+                        </span>
+                      </span>
+                    </button>
+                  ))
+                ) : (
+                  <div className="history-empty">
+                    <p className="kicker">尚无会话记录</p>
+                    <h2>从第一次问卦开始保存</h2>
+                    <p>登录后，在问卦页面发送的消息、助手回复和起卦结果会自动归入这里。</p>
+                  </div>
+                )}
+              </div>
+
+              <section className="history-detail">
+                {selectedSessionId ? (
+                  <>
+                    <div className="history-detail-heading">
+                      <div>
+                        <p className="kicker">SESSION TIMELINE</p>
+                        <h2>
+                          {sessions.find((session) => session.session_id === selectedSessionId)
+                            ?.title || "问卦会话"}
+                        </h2>
+                      </div>
+                      <code>{selectedSessionId.slice(0, 8)}</code>
+                    </div>
+                    <div className="history-timeline">
+                      {historyLoading ? (
+                        <p className="history-loading">正在读取完整记录</p>
+                      ) : sessionEvents.length ? (
+                        sessionEvents.map((event) => {
+                          const content = conversationContent(event);
+                          const role = conversationRole(event);
+                          return content ? (
+                            <article
+                              className={`history-message ${role}`}
+                              key={event.event_id}
+                            >
+                              <span>{role === "user" ? "你" : "问卦助手"}</span>
+                              <p>{content}</p>
+                              <time>{formatDateTime(event.occurred_at)}</time>
+                            </article>
+                          ) : (
+                            <article className="history-event" key={event.event_id}>
+                              <span>{historyEventLabel(event)}</span>
+                              <code>{event.event_type}</code>
+                              <time>{formatDateTime(event.occurred_at)}</time>
+                            </article>
+                          );
+                        })
+                      ) : (
+                        <p className="history-loading">这条会话暂时没有可显示的事件。</p>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="history-empty compact">
+                    <MessageSquare size={26} />
+                    <h2>选择一条会话</h2>
+                    <p>完整消息和结构化结果会在这里按顺序显示。</p>
+                  </div>
+                )}
+              </section>
             </div>
           ) : activeTab === "profiles" && filteredProfiles.length === 0 ? (
             <div className="panel empty-state" id="profiles">

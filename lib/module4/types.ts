@@ -13,6 +13,52 @@ export interface ApiEnvelope<T> {
   error: ApiErrorDetail | null;
 }
 
+export interface SessionItem {
+  session_id: string;
+  user_id: string;
+  system: string;
+  status: string;
+  title: string | null;
+  metadata: Record<string, unknown>;
+  started_at: string;
+  ended_at: string | null;
+}
+
+export interface SessionHistoryItem extends SessionItem {
+  event_count: number;
+  conversation_count: number;
+  last_event_at: string | null;
+  last_message_preview: string | null;
+}
+
+export interface SessionHistoryEvent {
+  event_id: string;
+  session_id: string;
+  user_id: string;
+  source_module: string;
+  event_type: string;
+  inference_eligible: boolean;
+  sequence_no: number;
+  occurred_at: string;
+  system: string;
+  payload: Record<string, unknown>;
+  source_refs: string[];
+  schema_version: string;
+  created_at: string;
+}
+
+export interface SessionEventDraft {
+  eventId?: string;
+  sessionId: string;
+  sourceModule: string;
+  eventType: string;
+  sequenceNo?: number;
+  occurredAt?: string;
+  system: string;
+  payload?: Record<string, unknown>;
+  sourceRefs?: string[];
+}
+
 export interface CollectionItem {
   collection_id: string;
   user_id: string;

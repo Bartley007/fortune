@@ -11,6 +11,10 @@ import type {
   PersonProfile,
   PersonProfileUpsertDraft,
   PrivacySettings,
+  SessionEventDraft,
+  SessionHistoryEvent,
+  SessionHistoryItem,
+  SessionItem,
   TagItem,
 } from "@/lib/module4/types";
 
@@ -75,6 +79,57 @@ async function request<T>(
 }
 
 export const module4Api = {
+  listSessions: (userId: string) =>
+    request<SessionHistoryItem[]>("/api/v1/sessions", userId),
+
+  createSession: (
+    userId: string,
+    draft: {
+      sessionId: string;
+      system: string;
+      title?: string;
+      metadata?: Record<string, unknown>;
+    },
+  ) =>
+    request<{ session: SessionItem; resumed: boolean }>("/api/v1/sessions", userId, {
+      method: "POST",
+      body: JSON.stringify({
+        session_id: draft.sessionId,
+        system: draft.system,
+        title: draft.title ?? null,
+        metadata: draft.metadata ?? {},
+      }),
+    }),
+
+  getSessionEvents: (userId: string, sessionId: string) =>
+    request<SessionHistoryEvent[]>(
+      `/api/v1/sessions/${encodeURIComponent(sessionId)}/events`,
+      userId,
+    ),
+
+  ingestSessionEvent: (userId: string, draft: SessionEventDraft) =>
+    request<{
+      event: SessionHistoryEvent;
+      duplicate: boolean;
+      idempotency_key: string | null;
+    }>("/api/v1/events/ingest", userId, {
+      method: "POST",
+      keepalive: true,
+      headers: draft.eventId ? { "X-Idempotency-Key": draft.eventId } : undefined,
+      body: JSON.stringify({
+        event_id: draft.eventId ?? null,
+        session_id: draft.sessionId,
+        source_module: draft.sourceModule,
+        event_type: draft.eventType,
+        sequence_no: draft.sequenceNo ?? null,
+        occurred_at: draft.occurredAt ?? null,
+        system: draft.system,
+        payload: draft.payload ?? {},
+        source_refs: draft.sourceRefs ?? [],
+        schema_version: "1.0",
+      }),
+    }),
+
   listPersonProfiles: (userId: string) =>
     request<PersonProfile[]>("/api/v1/me/profiles", userId),
 

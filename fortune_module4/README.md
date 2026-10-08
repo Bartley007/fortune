@@ -112,6 +112,7 @@ production embedding dimension is 1024 for BGE-M3. If the dimension changes, cre
 
 ```text
 POST   /api/v1/sessions
+GET    /api/v1/sessions
 POST   /api/v1/events/ingest
 GET    /api/v1/sessions/{session_id}/events[?inference_only=true]
 POST   /api/v1/recommendations/next
@@ -134,6 +135,8 @@ the complete conversation, but are marked `inference_eligible=false`. Recommenda
 similar-case logic only read the structured whitelist described in
 `docs/cross_module_contract.md`. In particular, Module 2 should emit one
 `module2a.divination.completed` event when a divination is complete and send feedback separately.
+`GET /api/v1/sessions` returns the user's session list with event counts and the latest message
+preview for the session-history panel.
 
 ## Upstream Compatibility API
 

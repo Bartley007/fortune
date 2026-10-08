@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import CollectionButton from "@/app/components/collection-button";
 import type { ApiEnvelope } from "@/lib/contracts/api";
@@ -9,6 +9,11 @@ import type {
   DivinationChatMessage,
   DivinationChatReply,
 } from "@/lib/contracts/divination";
+import {
+  createSessionEventId,
+  recordConversationMessage,
+  recordDivinationCompletion,
+} from "@/lib/module4/activity";
 
 import chatStyles from "./divination-chatbot.module.css";
 import HexagramEvolution from "./hexagram-evolution";
@@ -24,11 +29,34 @@ export default function DivinationChatbot() {
   const [pending, setPending] = useState(false);
   const [reply, setReply] = useState<DivinationChatReply | null>(null);
   const [cast, setCast] = useState<DivinationCastResult | null>(null);
+  const sessionIdRef = useRef<string | null>(null);
+  const sequenceRef = useRef(0);
+  const syncQueueRef = useRef<Promise<void>>(Promise.resolve());
+
+  function currentSessionId() {
+    sessionIdRef.current ??= createSessionEventId();
+    return sessionIdRef.current;
+  }
+
+  function enqueueSync(task: () => Promise<unknown>) {
+    syncQueueRef.current = syncQueueRef.current
+      .then(async () => {
+        await task();
+      })
+      .catch(() => undefined);
+  }
+
+  function persistMessage(role: "user" | "assistant", content: string) {
+    const sessionId = currentSessionId();
+    const sequenceNo = ++sequenceRef.current;
+    enqueueSync(() => recordConversationMessage(sessionId, role, content, sequenceNo));
+  }
 
   async function send(value = input) {
     const content = value.trim();
     if (!content || pending) return;
     const next = [...messages, { role: "user" as const, content }];
+    persistMessage("user", content);
     setMessages(next);
     setInput("");
     setPending(true);
@@ -47,6 +75,7 @@ export default function DivinationChatbot() {
       const bot = payload.result;
       setReply(bot);
       setMessages((current) => [...current, { role: "assistant", content: bot.message }]);
+      persistMessage("assistant", bot.message);
       if (bot.cast_request) {
         const castResponse = await fetch("/api/divination/cast", {
           method: "POST",
@@ -59,17 +88,36 @@ export default function DivinationChatbot() {
           throw new Error(castPayload.error?.message ?? "起卦服务暂不可用。");
         }
         setCast(result);
+        const completionSummary = `起卦完成：本卦「${result.primary.name}」，${
+          result.moving_lines.length
+            ? `动爻为第 ${result.moving_lines.join("、")} 爻`
+            : "本次无动爻"
+        }，变卦「${result.transformed.name}」。`;
         setMessages((current) => [
           ...current,
           {
             role: "assistant",
-            content: `起卦完成：本卦「${result.primary.name}」，${
-              result.moving_lines.length
-                ? `动爻为第 ${result.moving_lines.join("、")} 爻`
-                : "本次无动爻"
-            }，变卦「${result.transformed.name}」。`,
+            content: completionSummary,
           },
         ]);
+        persistMessage("assistant", completionSummary);
+        const sessionId = currentSessionId();
+        const sequenceNo = ++sequenceRef.current;
+        enqueueSync(() =>
+          recordDivinationCompletion(
+            sessionId,
+            {
+              divinationId: castPayload.session_id ?? createSessionEventId(),
+              question: bot.cast_request?.question ?? content,
+              method: bot.cast_request?.method ?? "numbers",
+              primaryHexagram: { ...result.primary },
+              changedHexagram: { ...result.transformed },
+              movingLines: result.moving_lines,
+              sourceRefs: result.reading?.source_refs.map((source) => source.source_id) ?? [],
+            },
+            sequenceNo,
+          ),
+        );
       }
     } catch (error) {
       setMessages((current) => [

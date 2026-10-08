@@ -3,15 +3,24 @@ from fastapi import APIRouter, Query
 from app.api.deps import CurrentUserId, DatabaseSession
 from app.schemas.common import Envelope, success_envelope
 from app.schemas.event import EventOut
-from app.schemas.session import SessionCreateRequest, SessionCreateResult
+from app.schemas.session import SessionCreateRequest, SessionCreateResult, SessionListItem
 from app.services.events import event_to_schema, list_session_events
 from app.services.sessions import (
     create_or_resume_session,
     get_session_or_404,
+    list_sessions_with_activity,
     session_to_schema,
 )
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
+
+
+@router.get("", response_model=Envelope[list[SessionListItem]])
+def list_sessions(
+    db: DatabaseSession,
+    user_id: CurrentUserId,
+) -> Envelope[list[SessionListItem]]:
+    return success_envelope(list_sessions_with_activity(db, user_id), system="personal")
 
 
 @router.post("", response_model=Envelope[SessionCreateResult])

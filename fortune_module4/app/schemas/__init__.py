@@ -31,7 +31,12 @@ from app.schemas.recommendation import (
     RecommendationItem,
     RecommendationResult,
 )
-from app.schemas.session import SessionCreateRequest, SessionCreateResult, SessionOut
+from app.schemas.session import (
+    SessionCreateRequest,
+    SessionCreateResult,
+    SessionListItem,
+    SessionOut,
+)
 
 __all__ = [
     "AgentAnalysisOut",
@@ -62,6 +67,7 @@ __all__ = [
     "RecommendationResult",
     "SessionCreateRequest",
     "SessionCreateResult",
+    "SessionListItem",
     "SessionOut",
     "SimilarCaseItem",
     "SimilarCaseRequest",
