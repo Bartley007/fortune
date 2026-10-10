@@ -25,6 +25,7 @@ export type ConversationRole = "user" | "assistant";
 export interface DivinationCompletionSnapshot {
   divinationId: string;
   question: string;
+  timeRange?: string;
   method: string;
   primaryHexagram: Record<string, unknown>;
   changedHexagram: Record<string, unknown>;
@@ -124,6 +125,7 @@ export async function recordDivinationCompletion(
           snapshot.changedHexagram.name,
         ].filter((value) => typeof value === "string" && value),
       },
+      time_range: snapshot.timeRange,
       rule_version: "frontend-divination-v1",
     },
     sourceRefs: snapshot.sourceRefs ?? [],

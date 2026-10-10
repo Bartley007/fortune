@@ -21,6 +21,13 @@ export interface DivinationReading {
   source_refs:Array<{source_id:string;title:string;url?:string}>;
 }
 export interface DivinationCastResult { primary:HexagramView; moving_lines:number[]; mutual:HexagramView; transformed:HexagramView; traditional_meaning:string; contextual_interpretation:string; reading?:DivinationReading }
+export type DivinationEvidenceRole="primary_judgment"|"primary_moving_line"|"transformed_judgment"|"transformed_static_line"|"special_line";
+export interface DivinationEvidenceItem { evidence_id:string; role:DivinationEvidenceRole; hexagram_number:number; hexagram_name:string; line_position?:number; priority:number; original:string; commentary:string[]; translation_en?:string; source_ids:string[] }
+export interface DivinationEvidencePack { rule_version:"changing-lines-v1"; selection_rule:string; question:string; time_range?:string; primary:{number:number;name:string}; transformed:{number:number;name:string}; moving_lines:number[]; evidence:DivinationEvidenceItem[]; sources:import("./api").SourceReference[] }
+export interface DivinationInterpretationReading { evidence_id:string; modern_chinese:string }
+export interface DivinationContextualReflection { text:string; evidence_ids:string[] }
+export interface DivinationModernInterpretation { readings:DivinationInterpretationReading[]; contextual_reflections:DivinationContextualReflection[]; uncertainties:string[]; disclaimer:string }
+export interface DivinationInterpretationResult { evidence_pack:DivinationEvidencePack; modern_interpretation:DivinationModernInterpretation|null; model_used?:string }
 export type ChatRole="user"|"assistant";
 export interface DivinationChatMessage { role:ChatRole; content:string }
 export interface DivinationChatRequest { messages:DivinationChatMessage[] }

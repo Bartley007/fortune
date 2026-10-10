@@ -31,7 +31,21 @@ npm run dev:all
 浏览器打开 [http://localhost:3000](http://localhost:3000)。`dev:all` 会同时启动组合算法服务、
 Module 4 后端和前端，并把持久数据写入 Codex 数据目录。
 
-默认端口和地址：
+默认启动会同时运行 Next.js（端口 3000）和 Module 4 服务（端口 8001）：
+
+```bash
+npm run dev
+```
+
+按 `Ctrl+C` 会同时关闭两个服务。需要包含 Python 算法、持久 Module 4 数据和前端时，使用：
+
+```bash
+npm run dev:all
+```
+
+`dev:all` 默认使用前端 3000、算法服务 8000、Module 4 服务 8003，并把持久数据写入 Codex 数据目录。单独调试前端或 Module 4 时可使用 `npm run dev:web` 或 `npm run dev:module4`。
+
+默认端口和地址如下。Python 算法服务尚未启动时可以保持对应变量为空，系统会使用带有 Mock 标记的兼容结果：
 
 ```env
 PYTHON_ALGORITHM_BASE_URL=http://127.0.0.1:8000

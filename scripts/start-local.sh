@@ -99,7 +99,7 @@ wait_for_http "Module 4" "http://127.0.0.1:${MODULE4_PORT}/health"
     LLM_BASE_URL="${LLM_BASE_URL_VALUE}" \
     LLM_API_KEY="${LLM_API_KEY_VALUE}" \
     LLM_MODEL="${LLM_MODEL_VALUE}" \
-    npm run dev -- --hostname 0.0.0.0 --port "${FRONTEND_PORT}"
+    npm run dev:web -- --hostname 0.0.0.0 --port "${FRONTEND_PORT}"
 ) >"${LOG_DIR}/frontend.log" 2>&1 &
 pids+=("$!")
 

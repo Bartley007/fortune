@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.errors import ConflictError, NotFoundError
 from app.models.entities import EventRecord, SessionRecord
 from app.schemas.session import SessionCreateRequest, SessionListItem, SessionOut
+from app.services.event_policy import is_conversation_message
 
 
 def create_or_resume_session(
@@ -76,7 +77,7 @@ def list_sessions_with_activity(
             ).all()
         )
         conversation_messages = [
-            event for event in events if event.event_type == "conversation.message"
+            event for event in events if is_conversation_message(event.event_type)
         ]
         preview: str | None = None
         if conversation_messages:

@@ -200,6 +200,14 @@ function conversationContent(event: SessionHistoryEvent): string {
   return typeof value === "string" ? value : "";
 }
 
+function isConversationEvent(event: SessionHistoryEvent): boolean {
+  return [
+    "conversation.message",
+    "module2a.chat.user_message",
+    "module2a.chat.assistant_message",
+  ].includes(event.event_type);
+}
+
 function conversationRole(event: SessionHistoryEvent): string {
   const value = event.payload.role;
   return value === "user" || value === "assistant" ? value : "system";
@@ -208,6 +216,8 @@ function conversationRole(event: SessionHistoryEvent): string {
 function historyEventLabel(event: SessionHistoryEvent): string {
   const labels: Record<string, string> = {
     "conversation.message": "对话记录",
+    "module2a.chat.user_message": "用户消息",
+    "module2a.chat.assistant_message": "助手回复",
     "module1.chart.completed": "八字排盘完成",
     "module2a.divination.completed": "起卦完成",
     "feedback.submitted": "用户反馈",
@@ -1032,7 +1042,9 @@ export default function LibraryWorkspace({ user }: { user: AuthUser }) {
                         <p className="history-loading">正在读取完整记录</p>
                       ) : sessionEvents.length ? (
                         sessionEvents.map((event) => {
-                          const content = conversationContent(event);
+                          const content = isConversationEvent(event)
+                            ? conversationContent(event)
+                            : "";
                           const role = conversationRole(event);
                           return content ? (
                             <article

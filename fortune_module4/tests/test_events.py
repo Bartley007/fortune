@@ -136,11 +136,14 @@ def test_session_history_list_returns_activity_and_preview(client: TestClient) -
         (1, "user", "我想问未来三个月的工作安排。"),
         (2, "assistant", "请提供两个正整数用于起卦。"),
     ):
+        event_type = (
+            "conversation.message" if sequence_no == 1 else "module2a.chat.assistant_message"
+        )
         response = client.post(
             "/api/session/event",
             json={
                 "session_id": session_id,
-                "event_type": "conversation.message",
+                "event_type": event_type,
                 "module": "divination",
                 "source_module": "module2a",
                 "sequence_no": sequence_no,
