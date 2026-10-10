@@ -119,7 +119,6 @@ lib/
   guanyin/          灵签数据校验和查询
   knowledge/        知识库检索
   module4/          Module 4 API 客户端、会话同步和类型
-  session/          旧版兼容用的临时会话存储
 fortune_module4/    持久化个人服务后端、数据库迁移和测试
 python_algorithm/   八字与易卦算法服务入口
 data/               结构化知识数据及来源材料
@@ -147,7 +146,7 @@ tests/              自动化测试
 | GET | `/api/module4/api/v1/sessions` | 可用；读取当前用户会话历史列表 |
 | GET | `/api/module4/api/v1/sessions/{id}/events` | 可用；读取完整消息和结构化事件时间线 |
 | POST | `/api/module4/api/v1/feedback` | 可用；反馈记录并生成独立反馈事件 |
-| POST | `/api/user/notes` | 旧版兼容接口，仍为进程内存；主流程使用 Module 4 持久化笔记 API |
+| POST | `/api/user/notes` | 持久化兼容接口；登录后写入 Module 4 笔记 API |
 
 所有浏览器端接口均返回 `lib/contracts/api.ts` 中定义的统一响应结构。
 
